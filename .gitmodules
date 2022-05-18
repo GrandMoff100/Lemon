@@ -1,3 +1,3 @@
-[submodule "lemon/sly/"]
-	path = lemon/sly/
-	url = git@github.com:dabeaz/sly
+[submodule "lemon/sly"]
+	path = lemon/sly
+	url = https://github.com/dabeaz/sly
