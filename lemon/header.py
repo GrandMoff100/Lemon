@@ -1,3 +1,4 @@
+import typing as t
 from .markdown import Markdown, MarkdownType, Renderable, render
 
 
@@ -6,6 +7,6 @@ class Header(Markdown):
         self.name = name
         self.body = body
 
-    def render(self, *args, depth: int = 0, **kwargs) -> "Renderable":
+    def render(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> "Renderable":
         yield f"#{'#' * depth} {render(self.name, *args, **kwargs)}"
         yield render(self.body, *args, kwargs, depth=depth + 1)

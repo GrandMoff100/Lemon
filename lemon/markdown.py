@@ -6,7 +6,7 @@ class Markdown:
     def __init__(self, *elements: Renderable) -> None:
         self.elements = elements
 
-    def render(self, *args, **kwargs) -> "Renderable":
+    def render(self, *args: t.Any, **kwargs: t.Any) -> "Renderable":
         yield " ".join([render(element, *args, **kwargs) for element in self.elements])
 
 
@@ -14,7 +14,7 @@ MarkdownType = t.Union[Markdown, str]
 Renderable = t.Union[MarkdownType, t.Iterable[MarkdownType]]
 
 
-def render(content: Renderable, *args, **kwargs) -> str:
+def render(content: Renderable, *args: t.Any, **kwargs: t.Any) -> str:
     if isinstance(content, Markdown):
         return render(content.render(*args, **kwargs), *args, **kwargs)
     if isinstance(content, str):

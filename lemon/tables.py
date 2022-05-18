@@ -4,9 +4,9 @@ import typing as t
 from .markdown import Markdown, MarkdownType, Renderable, render
 
 
-def pad(element: MarkdownType, *args, **kwargs):
+def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
     return f"  {render(element, *args, **kwargs)}  "
-
+    
 
 class Table(Markdown):
     def __init__(
@@ -31,7 +31,7 @@ class Table(Markdown):
             "table-id": self.table_id if self.table_id is not None else "",
         }
 
-    def render(self, *args, metadata: bool = False, **kwargs) -> Renderable:
+    def render(self, *args: t.Any, metadata: bool = False, **kwargs: t.Any) -> Renderable:
         if metadata:
             yield f"<!--{json.dumps(self.data)}-->"
 
