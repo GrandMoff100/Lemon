@@ -9,8 +9,8 @@ class Bold(Markdown):
     def __init__(self, content: MarkdownType) -> None:
         self.content = content
 
-    def dumps(self, *args: t.Any, **kwargs: t.Any) -> Renderable:
-        yield f"**{dumps(self.content)}**"
+    def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
+        return f"**{dumps(self.content, *args, **kwargs)}**"
 
 
 class Italics(Markdown):
@@ -19,5 +19,5 @@ class Italics(Markdown):
     def __init__(self, content: MarkdownType) -> None:
         self.content = content
 
-    def dumps(self, *args: t.Any, **kwargs: t.Any) -> Renderable:
-        yield f"*{dumps(self.content)}*"
+    def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
+        return f"*{dumps(self.content, *args, **kwargs)}*"

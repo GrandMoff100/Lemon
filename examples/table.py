@@ -1,4 +1,4 @@
-from lemon import Table, dumps
+from lemon import Table, dumps, loads
 
 data = Table(
     [
@@ -8,4 +8,5 @@ data = Table(
     ]
 )
 
-print(dumps(data))
+print(content := dumps(data))
+print(loads(content))

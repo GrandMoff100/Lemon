@@ -5,7 +5,7 @@ from .parse import loads
 
 
 class Header(Markdown):
-    __regex__: str = r"#+(?P<name>.+)\n(?P<body>(.|\n)+)"
+    __regex__: str = r"\#+\ +(.+)\n((?:.|\n)+)"
 
     def __init__(self, name: MarkdownType, body: Renderable = "") -> None:
         self.name = name
@@ -14,10 +14,10 @@ class Header(Markdown):
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({self.name!r}, {self.body!r})"
 
-    def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> "Renderable":
-        yield f"#{'#' * depth} {dumps(self.name, *args, **kwargs)}"
-        yield dumps(self.body, *args, kwargs, depth=depth + 1)
+    def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> str:
+        body = dumps(self.body, *args, **kwargs, depth=depth + 1)
+        return f"#{'#' * depth} {dumps(self.name, *args, **kwargs)}{body}"
 
-    @staticmethod
-    def loads(name: str, body: str) -> Renderable:  # type: ignore[override]
-        return Header(name=name.strip(), body=loads(body))
+    @classmethod
+    def loads(cls, ctx: t.Dict[str, t.Any], name: str, body: str) -> MarkdownType:  # type: ignore[override]
+        return cls(name=name.strip(), body=loads(body))
