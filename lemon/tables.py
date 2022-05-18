@@ -1,15 +1,15 @@
 import json
 import typing as t
 
-from .markdown import Markdown, MarkdownType, Renderable, render
+from .markdown import Markdown, MarkdownType, Renderable, dumps
 
 
 def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
-    return f"  {render(element, *args, **kwargs)}  "
-    
+    return f"  {dumps(element, *args, **kwargs)}  "
+
 
 class Table(Markdown):
-    _regex = r"(?:<!--(?P<meta>{.+})-->\n)?(?P<columns>\|(?:.+\|)+)\n\|(?:-+\|)+(?P<rows>\n\|(?:.+\|)+)+"
+    __regex__: str = r"(?P<columns>\|(?:.+\|)+)\n\|(?:-+\|)+(?P<rows>\n\|(?:.+\|)+)+"
 
     def __init__(
         self,
@@ -33,7 +33,12 @@ class Table(Markdown):
             "table-id": self.table_id if self.table_id is not None else "",
         }
 
-    def render(self, *args: t.Any, metadata: bool = False, **kwargs: t.Any) -> Renderable:
+    def dumps(
+        self,
+        *args: t.Any,
+        metadata: bool = False,
+        **kwargs: t.Any,
+    ) -> Renderable:
         if metadata:
             yield f"<!--{json.dumps(self.data)}-->"
 

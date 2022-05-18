@@ -2,7 +2,6 @@
 
 Easily access, serialize, and synthesize markdown information!
 
-
 | Feature | Dumpable | Loadable  |
 |---------|----------|-----------|
 | **Bold**| As of Initial Codebase | Not Yet |

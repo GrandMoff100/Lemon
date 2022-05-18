@@ -1,4 +1,4 @@
-from lemon import Table, render
+from lemon import Table, dumps
 
 data = Table(
     [
@@ -8,4 +8,4 @@ data = Table(
     ]
 )
 
-print(render(data))
+print(dumps(data))
