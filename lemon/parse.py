@@ -40,14 +40,11 @@ def build_lexer():
         ("t_error", lex_error),
         *token_regex(),
     )
-    cls = type("Lexer", (), {})
-    for name, value in order_preserved_attributes:
-        setattr(cls, name, value)
+    cls = type("Lexer", (), dict(order_preserved_attributes))
     return lex(module=cls)
 
 
 def construct(token) -> MarkdownType:
-    print(token)
     cls = token_lookup()[token.type]
     match = re.fullmatch(cls.__ctx_regex__ + cls.__regex__, token.value)
     assert match is not None

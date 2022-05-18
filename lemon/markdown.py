@@ -6,7 +6,6 @@ from collections import abc
 class Markdown:
     __regex__: str = r"((?:.|\n(?<!\n))+)"
     __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
-
     __precedence__: t.Tuple[str, ...] = (
         "TABLE",
         "MARKDOWN",
@@ -14,7 +13,6 @@ class Markdown:
         "BOLD",
         "ITALICS",
         "HEADER",
-        "TABLE",
     )
 
     def __init__(self, *elements: "Renderable", ctx: t.Dict[str, t.Any] = {}) -> None:
