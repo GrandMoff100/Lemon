@@ -1,5 +1,7 @@
 import typing as t
-from .markdown import Markdown, MarkdownType, Renderable, dumps, loads
+
+from .markdown import Markdown, MarkdownType, Renderable, dumps
+from .parse import loads
 
 
 class Header(Markdown):

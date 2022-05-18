@@ -16,7 +16,7 @@ class Markdown:
 
     def __init__(self, *elements: "Renderable") -> None:
         self.elements = elements
-    
+
     def __repr__(self) -> str:
         if hasattr(self, "elements"):
             return f"{self.__class__.__qualname__}(*{self.elements!r})"
@@ -46,5 +46,3 @@ def dumps(content: Renderable, *args: t.Any, **kwargs: t.Any) -> str:
     if isinstance(content, abc.Iterable):
         return "\n\n".join([dumps(item, *args, **kwargs) for item in content])
 
-def loads(content: str) -> t.Any:
-    pass

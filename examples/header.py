@@ -12,4 +12,3 @@ document = Header(
 print(content := dumps(document))
 
 print(loads(content))
-
