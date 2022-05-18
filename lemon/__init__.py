@@ -1,8 +1,8 @@
-from .markdown import Markdown, dumps, loads
-from .tables import Table
 from .header import Header
+from .markdown import Markdown, dumps
+from .parse import loads
 from .style import Bold, Italics
-
+from .tables import Table
 
 __all__ = (
     "dumps",
@@ -12,5 +12,4 @@ __all__ = (
     "Header",
     "Bold",
     "Italics",
-    
 )
