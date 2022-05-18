@@ -3,7 +3,9 @@ from .markdown import Markdown, MarkdownType, Renderable, render
 
 
 class Header(Markdown):
-    def __init__(self, name: MarkdownType, body: Renderable = ""):
+    _regex = r"#+(.+)\n"
+
+    def __init__(self, name: MarkdownType, body: Renderable = "") -> None:
         self.name = name
         self.body = body
 

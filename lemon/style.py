@@ -3,6 +3,8 @@ from .markdown import Markdown, MarkdownType, Renderable, render
 
 
 class Bold(Markdown):
+    _regex = r"**(.+)**"
+
     def __init__(self, content: MarkdownType) -> None:
         self.content = content
 
@@ -11,6 +13,8 @@ class Bold(Markdown):
 
 
 class Italics(Markdown):
+    _regex = r"*(.+)*"
+
     def __init__(self, content: MarkdownType) -> None:
         self.content = content
 

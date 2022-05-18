@@ -9,6 +9,8 @@ def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
     
 
 class Table(Markdown):
+    _regex = r"(?:<!--(?P<meta>{.+})-->\n)?(?P<columns>\|(?:.+\|)+)\n\|(?:-+\|)+(?P<rows>\n\|(?:.+\|)+)+"
+
     def __init__(
         self,
         rows: t.Iterable[t.Iterable[MarkdownType]],
