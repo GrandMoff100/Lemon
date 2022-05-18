@@ -3,8 +3,11 @@ from collections import abc
 
 
 class Markdown:
-    def render(self, *_, **__) -> "Renderable":
-        yield ""
+    def __init__(self, *elements: Renderable) -> None:
+        self.elements = elements
+
+    def render(self, *args, **kwargs) -> "Renderable":
+        yield " ".join([render(element, *args, **kwargs) for element in self.elements])
 
 
 MarkdownType = t.Union[Markdown, str]
