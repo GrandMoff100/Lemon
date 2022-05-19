@@ -2,7 +2,7 @@ import json
 import re
 import typing as t
 
-from .lex import lex, Lexer, LexToken
+from .lex import Lexer, LexToken, lex
 from .markdown import Markdown, MarkdownType, Newline, Renderable
 from .style import StyleMixin
 
@@ -73,10 +73,12 @@ def subdivide(markdown: Markdown) -> Markdown:
         if source.strip():
             elements.append(source.strip())
     finally:
+        print(elements)
         return Markdown(*elements)
 
 
 def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
+    print("value", value)
     ctx, params = extract(value, cls)
     if ctx is not None:
         element = cls.loads(

@@ -1,7 +1,7 @@
 from .header import Header
 from .markdown import Markdown
 from .serialize import dumps, loads
-from .style import Bold, Italics, Strikethrough
+from .style import Bold, InlineCode, Italics, Strikethrough
 from .tables import Table
 
 __all__ = (
@@ -12,5 +12,6 @@ __all__ = (
     "Header",
     "Bold",
     "Italics",
+    "InlineCode",
     "Strikethrough",
 )
