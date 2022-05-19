@@ -1,10 +1,8 @@
 import json
 import re
 import typing as t
-from functools import reduce
-import operator as op
 
-from .lex import lex
+from .lex import lex, Lexer, LexToken
 from .markdown import Markdown, MarkdownType, Newline, Renderable
 from .style import StyleMixin
 
@@ -18,30 +16,30 @@ def token_regex() -> t.Generator[t.Tuple[str, str], None, None]:
         yield f"t_{name}", cls.__ctx_regex__ + cls.__regex__
 
 
-def lex_error(token) -> None:
+def lex_error(token: LexToken) -> None:
     raise ValueError(token)
 
 
-def build_lexer():
+def build_lexer() -> Lexer:
     order_preserved_attributes = (
         ("tokens", tuple(tokens())),
         ("t_error", lex_error),
         *token_regex(),
     )
-    cls = type("Lexer", (), {})
+    cls = type("LemonLexer", (), {})
     for name, value in order_preserved_attributes:
         setattr(cls, name, value)
-    return lex(module=cls)
+    return t.cast(Lexer, lex(module=cls))  # type: ignore[no-untyped-call]
 
 
-def extract(value, cls):
+def extract(value: str, cls: t.Type[Markdown]) -> t.Tuple[t.Optional[str], t.List[str]]:
     match = re.fullmatch(
         cls.__ctx_regex__ + cls.__regex__,
         value,
     )
     assert match is not None
-    ctx, *params = match.groups()
-    return ctx, params
+    ctx, *params = t.cast(t.List[str], match.groups())
+    return t.cast(t.Optional[str], ctx), params
 
 
 def subdivide(markdown: Markdown) -> Markdown:
@@ -55,7 +53,7 @@ def subdivide(markdown: Markdown) -> Markdown:
                 lambda pair: pair[0] is not None,
                 [
                     (
-                        t.cast(re.Match, re.search(style_class.__regex__, source)),
+                        t.cast(t.Match[str], re.search(style_class.__regex__, source)),
                         style_class,
                     )
                     for style_class in StyleMixin.__subclasses__()
@@ -69,7 +67,7 @@ def subdivide(markdown: Markdown) -> Markdown:
             elements += [pre]
         elements += [
             construct(sub_content, style_class),
-            *subdivide(Markdown(source)).elements, # type: ignore[list-item]
+            *subdivide(Markdown(source)).elements,  # type: ignore[list-item]
         ]
     except ValueError:
         if source.strip():
@@ -78,11 +76,18 @@ def subdivide(markdown: Markdown) -> Markdown:
         return Markdown(*elements)
 
 
-def construct(value, cls) -> MarkdownType:
+def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
     ctx, params = extract(value, cls)
     if ctx is not None:
-        ctx = json.loads(ctx)
-    element = cls.loads(ctx, *params)
+        element = cls.loads(
+            t.cast(
+                t.Optional[t.Dict[str, t.Any]],
+                json.loads(ctx),
+            ),
+            *params,
+        )
+    else:
+        element = cls.loads(ctx, *params)
     if type(element) == Markdown:
         return subdivide(element)
     return element
@@ -96,10 +101,3 @@ def clean(tree: t.List[MarkdownType]) -> t.List[MarkdownType]:
     ]
     tree = [element for element in tree if not isinstance(element, Newline)]
     return tree
-
-
-def loads(content: str) -> t.List[MarkdownType]:
-    lexer = build_lexer()
-    lexer.input(content)
-    lookup = {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
-    return clean([construct(token.value, lookup[token.type]) for token in lexer])

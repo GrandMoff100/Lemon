@@ -1,14 +1,15 @@
 import json
 import typing as t
 
-from .markdown import Markdown, MarkdownType, Renderable, dumps
+from .markdown import Markdown, MarkdownType, Renderable
+from .serialize import dumps
 
 
 def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
     return f"  {dumps(element, *args, **kwargs, inline=True)}  "
 
 
-def extract(raw_headers: str, raw_rows: str):
+def extract(raw_headers: str, raw_rows: str) -> t.List[t.List[str]]:
     _, *columns, _ = map(str.strip, raw_headers.split("|"))
     rows = [columns]
     for row in raw_rows.splitlines():
@@ -30,6 +31,15 @@ class Table(Markdown):
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__qualname__} columns={self.columns!r} entries={self.height - 1}>"
+
+    def __eq__(self, other: t.Any) -> bool:
+        if not isinstance(other, Table):
+            return False
+        return (
+            self.columns == other.columns
+            and self.rows == other.rows
+            and self.table_id == other.table_id
+        )
 
     @property
     def width(self) -> int:
@@ -58,9 +68,9 @@ class Table(Markdown):
             f"|{'|'.join([pad(item, *args, **kwargs) for item in row])}|"
             for row in self.rows
         ]
-        return "\n".join(table) + "\n\n"
+        return "\n".join(table) + "\n"
 
     @classmethod
-    def loads(cls, ctx: t.Dict[str, t.Any], headers: str, rows: str) -> MarkdownType:  # type: ignore[override]
+    def loads(cls, ctx: t.Optional[t.Dict[str, t.Any]], headers: str, rows: str) -> MarkdownType:  # type: ignore[override]
         table_id = ctx.get("table-id") if ctx is not None else None
         return cls(extract(headers, rows), table_id=table_id)
