@@ -15,9 +15,13 @@ class Header(Markdown):
         return f"{self.__class__.__qualname__}({self.name!r}, {self.body!r})"
 
     def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> str:
+        from .serialize import dumps
+
         body = dumps(self.body, *args, **kwargs, depth=depth + 1)
         return f"#{'#' * depth} {dumps(self.name, *args, **kwargs)}{body}"
 
     @classmethod
-    def loads(cls, ctx: t.Dict[str, t.Any], name: str, body: str) -> MarkdownType:  # type: ignore[override]
+    def loads(cls, ctx: t.Optional[t.Dict[str, t.Any]], name: str, body: str) -> MarkdownType:  # type: ignore[override]
+        from .serialize import loads
+
         return cls(name=name.strip(), body=loads(body))

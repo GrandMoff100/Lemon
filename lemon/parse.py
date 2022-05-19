@@ -1,8 +1,6 @@
 import json
 import re
 import typing as t
-from functools import reduce
-import operator as op
 
 from .lex import lex
 from .markdown import Markdown, MarkdownType, Newline, Renderable
@@ -96,10 +94,3 @@ def clean(tree: t.List[MarkdownType]) -> t.List[MarkdownType]:
     ]
     tree = [element for element in tree if not isinstance(element, Newline)]
     return tree
-
-
-def loads(content: str) -> t.List[MarkdownType]:
-    lexer = build_lexer()
-    lexer.input(content)
-    lookup = {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
-    return clean([construct(token.value, lookup[token.type]) for token in lexer])

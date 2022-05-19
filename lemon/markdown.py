@@ -9,7 +9,10 @@ class Markdown:
     __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
 
     def __init__(self, *elements: "Renderable", ctx: t.Dict[str, t.Any] = {}) -> None:
-        self.elements = [element if not isinstance(element, str) else element.strip() for element in elements]
+        self.elements = [
+            element if not isinstance(element, str) else element.strip()
+            for element in elements
+        ]
 
     def __repr__(self) -> str:
         if type(self) == Markdown:
@@ -22,18 +25,15 @@ class Markdown:
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         kwargs["inline"] = True
-        return (
-            "".join(
-                [
-                    dumps(
-                        element,
-                        *args,
-                        **kwargs,
-                    )
-                    for element in self.elements
-                ]
-            )
-            + "\n\n"
+        return " ".join(
+            [
+                dumps(
+                    element,
+                    *args,
+                    **kwargs,
+                )
+                for element in self.elements
+            ]
         )
 
     @classmethod
@@ -64,28 +64,3 @@ class Newline(Markdown):
     @classmethod
     def loads(cls, ctx: t.Dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]
         return cls()
-
-
-def dumps(
-    content: Renderable,
-    *args: t.Any,
-    inline: bool = False,
-    **kwargs: t.Any,
-) -> str:
-    result = ""
-    if isinstance(content, Markdown):
-        if content.data:
-            result += f"<!--{json.dumps(content.data)}-->\n"
-        result += content.dumps(*args, **kwargs)
-        result += " "
-    elif isinstance(content, str):
-        result += content
-        if inline is False:
-            result += "\n\n"
-        else:
-            result += " "
-    elif isinstance(content, abc.Iterable):
-        kwargs["inline"] = True
-        for item in content:
-            result += dumps(item, *args, **kwargs)
-    return result

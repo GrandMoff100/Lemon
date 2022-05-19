@@ -1,7 +1,8 @@
 import json
 import typing as t
 
-from .markdown import Markdown, MarkdownType, Renderable, dumps
+from .markdown import Markdown, MarkdownType, Renderable
+from .serialize import dumps
 
 
 def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:

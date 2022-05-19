@@ -16,8 +16,9 @@ class StyleMixin(Markdown):
     def loads(cls, ctx: t.Dict[str, t.Any], content: str) -> MarkdownType:  # type: ignore[override]
         return cls(content)
 
-    def dumps(self, *args, **kwargs) -> str:
-        kwargs["inline"] = True
+    def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
+        from .serialize import dumps
+
         return dumps(self.content, *args, **kwargs).strip()
 
 
