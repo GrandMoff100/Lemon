@@ -14,6 +14,13 @@ class Markdown:
             for element in elements
         ]
 
+    def __eq__(self, other: t.Any) -> bool:
+        if not isinstance(other, Markdown):
+            return False
+        if not hasattr(other, "elements"):
+            return False
+        return self.elements == other.elements
+
     def __repr__(self) -> str:
         if type(self) == Markdown:
             return f"Markdown({', '.join(map(repr, self.elements))})"
@@ -24,6 +31,9 @@ class Markdown:
         return {}
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
+        # Prevents circular import!
+        from .serialize import dumps
+
         kwargs["inline"] = True
         return " ".join(
             [
@@ -38,7 +48,9 @@ class Markdown:
 
     @classmethod
     def loads(
-        cls, ctx: t.Dict[str, t.Any], *elements: "MarkdownType"
+        cls,
+        ctx: t.Optional[t.Dict[str, t.Any]],
+        *elements: "MarkdownType",
     ) -> "MarkdownType":
         return Markdown(*elements)
 
@@ -55,10 +67,11 @@ Renderable = t.Union[MarkdownType, t.Iterable[MarkdownType]]
 class Newline(Markdown):
     __regex__: str = r"\n"
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def dumps(self, *_, **__) -> str:
+    @staticmethod
+    def dumps(*_: t.Any, **__: t.Any) -> str:
         return "\n"
 
     @classmethod

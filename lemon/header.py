@@ -1,7 +1,6 @@
 import typing as t
 
-from .markdown import Markdown, MarkdownType, Renderable, dumps
-from .parse import loads
+from .markdown import Markdown, MarkdownType, Renderable
 
 
 class Header(Markdown):
@@ -13,6 +12,11 @@ class Header(Markdown):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({self.name!r}, {self.body!r})"
+
+    def __eq__(self, other: t.Any) -> bool:
+        if not isinstance(other, Header):
+            return False
+        return self.name == other.name and self.body == other.body
 
     def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> str:
         from .serialize import dumps
