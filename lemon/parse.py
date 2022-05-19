@@ -1,32 +1,20 @@
 import json
 import re
 import typing as t
+from functools import reduce
+import operator as op
 
 from .lex import lex
 from .markdown import Markdown, MarkdownType, Newline, Renderable
+from .style import StyleMixin
 
 
-def token_lookup() -> t.Dict[str, t.Type[Markdown]]:
-    return {
-        cls.__qualname__.upper(): cls for cls in Markdown.__subclasses__() + [Markdown]
-    }
-
-
-def all_tokens() -> t.Tuple[str, ...]:
-    return tuple(
-        sorted(
-            token_lookup(),
-            key=lambda name: 0
-            if name not in Markdown.__precedence__
-            else Markdown.__precedence__.index(name),
-        )
-    )
+def tokens() -> t.Dict[str, t.Type[Markdown]]:
+    return {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
 
 
 def token_regex() -> t.Generator[t.Tuple[str, str], None, None]:
-    lookup = token_lookup()
-    for name in all_tokens():
-        cls = lookup[name]
+    for name, cls in tokens().items():
         yield f"t_{name}", cls.__ctx_regex__ + cls.__regex__
 
 
@@ -36,29 +24,82 @@ def lex_error(token) -> None:
 
 def build_lexer():
     order_preserved_attributes = (
-        ("tokens", all_tokens()),
+        ("tokens", tuple(tokens())),
         ("t_error", lex_error),
         *token_regex(),
     )
-    cls = type("Lexer", (), dict(order_preserved_attributes))
+    cls = type("Lexer", (), {})
+    for name, value in order_preserved_attributes:
+        setattr(cls, name, value)
     return lex(module=cls)
 
 
-def construct(token) -> MarkdownType:
-    cls = token_lookup()[token.type]
-    match = re.fullmatch(cls.__ctx_regex__ + cls.__regex__, token.value)
+def extract(value, cls):
+    match = re.fullmatch(
+        cls.__ctx_regex__ + cls.__regex__,
+        value,
+    )
     assert match is not None
     ctx, *params = match.groups()
+    return ctx, params
+
+
+def subdivide(markdown: Markdown) -> Markdown:
+    source, *_ = markdown.elements
+    assert isinstance(source, str)
+    elements: t.List[MarkdownType] = []
+
+    try:
+        (match, style_class), *_ = sorted(
+            filter(
+                lambda pair: pair[0] is not None,
+                [
+                    (
+                        t.cast(re.Match, re.search(style_class.__regex__, source)),
+                        style_class,
+                    )
+                    for style_class in StyleMixin.__subclasses__()
+                ],
+            ),
+            key=lambda pair: pair[0].start(),
+        )
+        sub_content = match.string[match.start() : match.end()]
+        pre, source = source.split(sub_content)
+        if pre.strip():
+            elements += [pre]
+        elements += [
+            construct(sub_content, style_class),
+            *subdivide(Markdown(source)).elements, # type: ignore[list-item]
+        ]
+    except ValueError:
+        if source.strip():
+            elements.append(source.strip())
+    finally:
+        return Markdown(*elements)
+
+
+def construct(value, cls) -> MarkdownType:
+    ctx, params = extract(value, cls)
     if ctx is not None:
         ctx = json.loads(ctx)
-    return cls.loads(ctx, *params)
+    element = cls.loads(ctx, *params)
+    if type(element) == Markdown:
+        return subdivide(element)
+    return element
 
 
 def clean(tree: t.List[MarkdownType]) -> t.List[MarkdownType]:
-    return [element for element in tree if not isinstance(element, Newline)]
+    tree = [
+        element
+        for element in tree
+        if not (isinstance(element, str) and element == " " * len(element))
+    ]
+    tree = [element for element in tree if not isinstance(element, Newline)]
+    return tree
 
 
 def loads(content: str) -> t.List[MarkdownType]:
     lexer = build_lexer()
     lexer.input(content)
-    return clean([construct(token) for token in lexer])
+    lookup = {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
+    return clean([construct(token.value, lookup[token.type]) for token in lexer])
