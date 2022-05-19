@@ -4,9 +4,9 @@ Easily access, serialize, and synthesize markdown information!
 
 | Feature | Dumpable | Loadable  |
 |---------|----------|-----------|
-| Bold | As of Initial Codebase | Not Yet |
-| Italics | As of Initial Codebase | Not Yet |
-| Strikethrough | Not Yet | Not Yet |
+| Bold | As of Initial Codebase | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
+| Italics | As of Initial Codebase | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
+| Strikethrough | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
 | Tables | As of Initial Codebase | As of [#3](https://github.com/GrandMoff100/Lemon/pulls/3) |
 | Headers | As of Intitial Codebase | As of [#2](https://github.com/GrandMoff100/Lemon/pulls/2) |
 | Inline Code Blocks | Not Yet | Not Yet |
@@ -23,4 +23,4 @@ Easily access, serialize, and synthesize markdown information!
 | Footnotes | Not Yet | Not Yet |
 | Definition List | Not Yet | Not Yet |
 | Highlighting | Not Yet | Not Yet |
-| ~~Sub/Superscripts~~ | Not Supported | Not Supported |
+| ~~Sub/Superscripts~~ | Not Supported (in MD) | Not Supported (in MD) |
