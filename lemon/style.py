@@ -46,3 +46,11 @@ class Strikethrough(StyleMixin):
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         return f"~~{super().dumps(*args, **kwargs)}~~"
+
+
+class InlineCode(StyleMixin):
+    __regex__: str = r"(?:(?<!\\)``(?!`)(.+?)(?<!\\)``)|(?:(?<!\\)`(?!`)(.+?)(?<!\\)`)"
+    __ignore__: bool = False
+
+    def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
+        return f"``{super().dumps(*args, **kwargs)}``"
