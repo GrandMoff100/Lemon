@@ -4,8 +4,8 @@ Easily access, serialize, and synthesize markdown information!
 
 | Feature | Dumpable | Loadable  |
 |---------|----------|-----------|
-| Bold | As of Initial Codebase | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
-| Italics | As of Initial Codebase | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
+| Bold | As of Initial Codebase | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
+| Italics | As of Initial Codebase | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
 | Strikethrough | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
 | Tables | As of Initial Codebase | As of [#3](https://github.com/GrandMoff100/Lemon/pulls/3) |
 | Headers | As of Intitial Codebase | As of [#2](https://github.com/GrandMoff100/Lemon/pulls/2) |
