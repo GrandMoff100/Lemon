@@ -9,8 +9,8 @@ Easily access, serialize, and synthesize markdown information!
 | Strikethrough | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) | [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |
 | Tables | As of Initial Codebase | As of [#3](https://github.com/GrandMoff100/Lemon/pulls/3) |
 | Headers | As of Intitial Codebase | As of [#2](https://github.com/GrandMoff100/Lemon/pulls/2) |
-| Inline Code Blocks | [#6](https://github.com/GrandMoff100/Lemon/pulls/6) | [#6](https://github.com/GrandMoff100/Lemon/pulls/6) |
-| Fenced Code Blocks | Not Yet | Not Yet |
+| Inline Code Blocks | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) |
+| Fenced Code Blocks | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) |
 | Blockquotes | Not Yet | Not Yet |
 | Links/Images | Not Yet | Not Yet |
 | Bulleted Lists | Not Yet | Not Yet |
