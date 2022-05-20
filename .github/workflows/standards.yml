@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install and Run Mypy
         run: |
-          python -m pip install isort
+          python -m pip install mypy
           python -m mypy .
   pytest:
     runs-on: ubuntu-latest
