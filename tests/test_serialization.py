@@ -2,6 +2,7 @@ from lemon import (
     Bold,
     Header,
     InlineCode,
+    CodeSnippet,
     Italics,
     Markdown,
     Strikethrough,
@@ -87,6 +88,31 @@ class TestDumping:
             "``range(len(obj))`` vs ``enumerate(obj)`` ."
         )
 
+    def test_CodeSnippet(self):
+        document = CodeSnippet(
+            """
+import math
+
+def topsecretcode():
+    print("Hello World")
+
+foobar()
+""",
+            "python",
+        )
+        expected = (
+            "```python\n"
+            "import math\n"
+            "\n"
+            "def topsecretcode():\n"
+            '    print("Hello World")\n'
+            "\n"
+            "foobar()\n"
+            "```\n"
+        )
+
+        assert dumps(document) == expected
+
 
 class TestLoading:
     def test_Header(self) -> None:
@@ -170,3 +196,17 @@ class TestLoading:
                 ".",
             )
         ]
+
+    def test_CodeSnippet(self):
+        content = (
+            "```python\n"
+            "import math\n"
+            "\n"
+            "def topsecretcode():\n"
+            '    print("Hello World")\n'
+            "\n"
+            "foobar()\n"
+            "```\n"
+        )
+
+        assert loads(content) == [CodeSnippet('import math\n\ndef topsecretcode():\n    print("Hello World")\n\nfoobar()', 'python')]
