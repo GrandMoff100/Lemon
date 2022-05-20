@@ -72,21 +72,20 @@ class TestDumping:
             "|  Ted  |  New York  |  Busy  |\n"
             "|  Angie  |  France  |  Free  |\n"
         )
-    
+
     def test_InlineCode(self):
         document = Markdown(
             "The most telling sign of a python beginner is the use of",
             InlineCode("range(len(obj))"),
             "vs",
             InlineCode("enumerate(obj)"),
-            "."
+            ".",
         )
         assert dumps(document) == (
             "The most telling sign of a "
             "python beginner is the use of "
             "``range(len(obj))`` vs ``enumerate(obj)`` ."
         )
-
 
 
 class TestLoading:
@@ -162,4 +161,12 @@ class TestLoading:
     def test_InlineCode(self):
         content = "The most telling sign of a python beginner is the use of ``range(len(obj))`` vs ``enumerate(obj)`` ."
 
-        assert False
+        assert loads(content) == [
+            Markdown(
+                "The most telling sign of a python beginner is the use of",
+                InlineCode("range(len(obj))"),
+                "vs",
+                InlineCode("enumerate(obj)"),
+                ".",
+            )
+        ]

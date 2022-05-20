@@ -46,7 +46,6 @@ def subdivide(markdown: Markdown) -> Markdown:
     source, *_ = markdown.elements
     assert isinstance(source, str)
     elements: t.List[MarkdownType] = []
-
     try:
         (match, style_class), *_ = sorted(
             filter(
@@ -73,12 +72,10 @@ def subdivide(markdown: Markdown) -> Markdown:
         if source.strip():
             elements.append(source.strip())
     finally:
-        print(elements)
         return Markdown(*elements)
 
 
 def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
-    print("value", value)
     ctx, params = extract(value, cls)
     if ctx is not None:
         element = cls.loads(
