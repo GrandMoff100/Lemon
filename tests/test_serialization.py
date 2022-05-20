@@ -1,4 +1,15 @@
-from lemon import Bold, Header, Italics, Markdown, Strikethrough, Table, dumps, loads
+from lemon import (
+    Bold,
+    Header,
+    InlineCode,
+    CodeSnippet,
+    Italics,
+    Markdown,
+    Strikethrough,
+    Table,
+    dumps,
+    loads,
+)
 
 
 class TestDumping:
@@ -27,6 +38,7 @@ class TestDumping:
             "this is not",
             Strikethrough("and also strikethrough"),
             "and more regular text",
+            InlineCode("python -m code"),
             Bold("But bold again"),
             Strikethrough("and then strikethrough"),
             Italics("and finally more italics."),
@@ -39,6 +51,7 @@ class TestDumping:
             "this is not "
             "~~and also strikethrough~~ "
             "and more regular text "
+            "``python -m code`` "
             "**But bold again** "
             "~~and then strikethrough~~ "
             "*and finally more italics.* "
@@ -60,6 +73,45 @@ class TestDumping:
             "|  Ted  |  New York  |  Busy  |\n"
             "|  Angie  |  France  |  Free  |\n"
         )
+
+    def test_InlineCode(self):
+        document = Markdown(
+            "The most telling sign of a python beginner is the use of",
+            InlineCode("range(len(obj))"),
+            "vs",
+            InlineCode("enumerate(obj)"),
+            ".",
+        )
+        assert dumps(document) == (
+            "The most telling sign of a "
+            "python beginner is the use of "
+            "``range(len(obj))`` vs ``enumerate(obj)`` ."
+        )
+
+    def test_CodeSnippet(self):
+        document = CodeSnippet(
+            """
+import math
+
+def topsecretcode():
+    print("Hello World")
+
+foobar()
+""",
+            "python",
+        )
+        expected = (
+            "```python\n"
+            "import math\n"
+            "\n"
+            "def topsecretcode():\n"
+            '    print("Hello World")\n'
+            "\n"
+            "foobar()\n"
+            "```\n"
+        )
+
+        assert dumps(document) == expected
 
 
 class TestLoading:
@@ -92,10 +144,11 @@ class TestLoading:
             "this is not "
             "~~and also strikethrough~~ "
             "and more regular text "
+            "``python -m code`` "
             "**But bold again** "
             "~~and then strikethrough~~ "
             "*and finally more italics.* "
-            "finally some regular text. "
+            "finally some regular text."
         )
 
         assert loads(content) == [
@@ -105,6 +158,7 @@ class TestLoading:
                 "this is not",
                 Strikethrough("and also strikethrough"),
                 "and more regular text",
+                InlineCode("python -m code"),
                 Bold("But bold again"),
                 Strikethrough("and then strikethrough"),
                 Italics("and finally more italics."),
@@ -129,3 +183,30 @@ class TestLoading:
                 ]
             )
         ]
+
+    def test_InlineCode(self):
+        content = "The most telling sign of a python beginner is the use of ``range(len(obj))`` vs ``enumerate(obj)`` ."
+
+        assert loads(content) == [
+            Markdown(
+                "The most telling sign of a python beginner is the use of",
+                InlineCode("range(len(obj))"),
+                "vs",
+                InlineCode("enumerate(obj)"),
+                ".",
+            )
+        ]
+
+    def test_CodeSnippet(self):
+        content = (
+            "```python\n"
+            "import math\n"
+            "\n"
+            "def topsecretcode():\n"
+            '    print("Hello World")\n'
+            "\n"
+            "foobar()\n"
+            "```\n"
+        )
+
+        assert loads(content) == [CodeSnippet('import math\n\ndef topsecretcode():\n    print("Hello World")\n\nfoobar()', 'python')]

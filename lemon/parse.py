@@ -2,7 +2,7 @@ import json
 import re
 import typing as t
 
-from .lex import lex, Lexer, LexToken
+from .lex import Lexer, LexToken, lex
 from .markdown import Markdown, MarkdownType, Newline, Renderable
 from .style import StyleMixin
 
@@ -46,7 +46,6 @@ def subdivide(markdown: Markdown) -> Markdown:
     source, *_ = markdown.elements
     assert isinstance(source, str)
     elements: t.List[MarkdownType] = []
-
     try:
         (match, style_class), *_ = sorted(
             filter(
