@@ -12,7 +12,8 @@ class CodeSnippet(Markdown):
 
     def __repr__(self) -> str:
         params = [repr(param) for param in [self.language] if param]
-        return f"{self.__class__.__qualname__}({', '.join([repr(self.content)[:30] + '...', *params])})"
+        repr_params = ', '.join([repr(self.content)[:30] + '...', *params])
+        return f"{self.__class__.__qualname__}({repr_params})"
 
     def __eq__(self, other: t.Any) -> bool:
         if not isinstance(other, CodeSnippet):
@@ -23,6 +24,11 @@ class CodeSnippet(Markdown):
         return f"```{self.language if self.language else ''}\n{self.content}\n```\n"
 
     @classmethod
-    def loads(cls, ctx: t.Optional[t.Dict[str, t.Any]], language: str, content: str) -> Markdown:  # type: ignore[override]
+    def loads(  # type: ignore[override] # pylint: disable=arguments-differ
+        cls,
+        _: t.Optional[t.Dict[str, t.Any]],
+        language: str,
+        content: str,
+    ) -> Markdown:
         language = language.strip()
         return cls(content, None if not language else language)

@@ -14,6 +14,14 @@ isort = "^5.10.1"
 mypy = "^0.950"
 pytest = "^7.1.2"
 
+[tool.pylint.messages_control] 
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "super-init-not-called",
+    # "cyclic-import"
+]
 
 [tool.isort]
 profile = "black"

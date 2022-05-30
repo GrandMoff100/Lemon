@@ -3,12 +3,12 @@ import re
 import typing as t
 
 from .lex import Lexer, LexToken, lex
-from .markdown import Markdown, MarkdownType, Newline, Renderable
+from .markdown import Markdown, MarkdownType, Newline
 from .style import StyleMixin
 
 
 def tokens() -> t.Dict[str, t.Type[Markdown]]:
-    return {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
+    return {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
 
 
 def token_regex() -> t.Generator[t.Tuple[str, str], None, None]:
@@ -71,8 +71,7 @@ def subdivide(markdown: Markdown) -> Markdown:
     except ValueError:
         if source.strip():
             elements.append(source.strip())
-    finally:
-        return Markdown(*elements)
+    return Markdown(*elements)
 
 
 def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
@@ -87,7 +86,8 @@ def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
         )
     else:
         element = cls.loads(ctx, *params)
-    if type(element) == Markdown:
+    # Check for only Markdown type not children.
+    if type(element) == Markdown:  # pylint: disable=unidiomatic-typecheck
         return subdivide(element)
     return element
 

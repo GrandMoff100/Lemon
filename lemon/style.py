@@ -1,6 +1,6 @@
 import typing as t
 
-from .markdown import Markdown, MarkdownType, Renderable
+from .markdown import Markdown, MarkdownType
 
 
 class StyleMixin(Markdown):
@@ -18,11 +18,12 @@ class StyleMixin(Markdown):
         return self.content == other.content
 
     @classmethod
-    def loads(cls, ctx: t.Optional[t.Dict[str, t.Any]], content: str) -> MarkdownType:  # type: ignore[override]
+    def loads(cls, _: t.Optional[t.Dict[str, t.Any]], content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ
         return cls(content)
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        from .serialize import dumps
+        # Prevents circular import!
+        from .serialize import dumps  # pylint: disable=import-outside-toplevel
 
         return dumps(self.content, *args, **kwargs).strip()
 

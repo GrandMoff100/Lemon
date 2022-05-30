@@ -30,5 +30,5 @@ def dumps(
 def loads(content: str) -> t.List[MarkdownType]:
     lexer = build_lexer()
     lexer.input(content)  # type: ignore[no-untyped-call]
-    lookup = {cls.__qualname__.upper(): cls for cls in Markdown._classes()}
+    lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
     return clean([construct(token.value, lookup[token.type]) for token in lexer])

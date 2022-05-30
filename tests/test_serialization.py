@@ -209,4 +209,9 @@ class TestLoading:
             "```\n"
         )
 
-        assert loads(content) == [CodeSnippet('import math\n\ndef topsecretcode():\n    print("Hello World")\n\nfoobar()', 'python')]
+        assert loads(content) == [
+            CodeSnippet(
+                'import math\n\ndef topsecretcode():\n    print("Hello World")\n\nfoobar()',
+                "python",
+            )
+        ]

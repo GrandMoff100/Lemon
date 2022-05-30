@@ -1,6 +1,4 @@
-import json
 import typing as t
-from collections import abc
 
 
 class Markdown:
@@ -8,7 +6,9 @@ class Markdown:
     __regex__: str = r"((?:.|\n(?<!\n))+)"
     __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
 
-    def __init__(self, *elements: "Renderable", ctx: t.Dict[str, t.Any] = {}) -> None:
+    def __init__(
+        self, *elements: "Renderable", _: t.Optional[t.Dict[str, t.Any]] = None
+    ) -> None:
         self.elements = [
             element if not isinstance(element, str) else element.strip()
             for element in elements
@@ -22,7 +22,8 @@ class Markdown:
         return self.elements == other.elements
 
     def __repr__(self) -> str:
-        if type(self) == Markdown:
+        # Check for only a Markdown object.
+        if type(self) == Markdown:  # pylint: disable=unidiomatic-typecheck
             return f"Markdown({', '.join(map(repr, self.elements))})"
         return f"{self.__class__.__qualname__}()"
 
@@ -32,7 +33,7 @@ class Markdown:
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         # Prevents circular import!
-        from .serialize import dumps
+        from .serialize import dumps  # pylint: disable=import-outside-toplevel
 
         kwargs["inline"] = True
         return " ".join(
@@ -49,13 +50,13 @@ class Markdown:
     @classmethod
     def loads(
         cls,
-        ctx: t.Optional[t.Dict[str, t.Any]],
+        _: t.Optional[t.Dict[str, t.Any]],
         *elements: "MarkdownType",
     ) -> "MarkdownType":
         return Markdown(*elements)
 
     @classmethod
-    def _classes(cls) -> t.List[t.Type["Markdown"]]:
+    def classes(cls) -> t.List[t.Type["Markdown"]]:
         _classes = cls.__subclasses__() + [cls]
         return [_cls for _cls in _classes if not _cls.__ignore__]
 
@@ -75,5 +76,5 @@ class Newline(Markdown):
         return "\n"
 
     @classmethod
-    def loads(cls, ctx: t.Dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]
+    def loads(cls, _: t.Dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]  # pylint: disable=arguments-differ
         return cls()
