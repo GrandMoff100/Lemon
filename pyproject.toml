@@ -20,7 +20,7 @@ disable = [
     "missing-class-docstring",
     "missing-function-docstring",
     "super-init-not-called",
-    # "cyclic-import"
+    "cyclic-import"
 ]
 
 [tool.isort]
