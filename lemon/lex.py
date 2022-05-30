@@ -1,3 +1,4 @@
+# pylint: disable-all
 # -----------------------------------------------------------------------------
 # ply: lex.py
 #
@@ -35,7 +36,6 @@
 
 import copy
 import inspect
-import os
 import re
 import sys
 import types
