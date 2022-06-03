@@ -1,18 +1,25 @@
-from lemon import CodeSnippet, InlineCode, Markdown, dumps, loads
+from lemon import CodeSnippet, InlineCode, Text, dumps, loads
 
-document = Markdown(
+document = Text(
     "The most telling sign of a python beginner is the use of",
     InlineCode("range(len(obj))"),
     "vs",
     InlineCode("enumerate(obj)"),
-    ".",
 )
 
 print(content := dumps(document))
-# The most telling sign of a python beginner is the use of ``range(len(obj))`` vs ``enumerate(obj)`` .
+# The most telling sign of a python beginner is the use of ``range(len(obj))`` vs ``enumerate(obj)``
 
 print(loads(content))
-# [Markdown('The most telling sign of a python beginner is the use of', InlineCode('range(len(obj))'), 'vs', InlineCode('enumerate(obj)'), '.')]
+# [
+#   Text(
+#       'The most telling sign of a python beginner is the use of',
+#       InlineCode('range(len(obj))'),
+#       'vs',
+#       InlineCode('enumerate(obj)'),
+#       '.'
+#   )
+# ]
 
 snippet = CodeSnippet(
     """

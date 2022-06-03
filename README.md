@@ -2,6 +2,7 @@
 
 Easily access, serialize, and synthesize markdown information!
 
+<!--{"element-id": "feature-table"}-->
 | Feature | Dumpable | Loadable  |
 |---------|----------|-----------|
 | Bold | As of Initial Codebase | As of [#4](https://github.com/GrandMoff100/Lemon/pulls/4) |

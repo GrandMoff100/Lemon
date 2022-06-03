@@ -23,10 +23,13 @@ class Table(Markdown):
     def __init__(
         self,
         rows: t.Iterable[t.Iterable[MarkdownType]],
-        table_id: t.Optional[str] = None,
+        element_id: t.Optional[str] = None,
     ) -> None:
         self.columns, *self.rows = tuple(tuple(row) for row in rows)
-        self.table_id = table_id
+        if element_id is not None:
+            super().__init__({"element-id": element_id})
+        else:
+            super().__init__({})
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__qualname__} columns={self.columns!r} entries={self.height - 1}>"
@@ -37,7 +40,7 @@ class Table(Markdown):
         return (
             self.columns == other.columns
             and self.rows == other.rows
-            and self.table_id == other.table_id
+            and self.element_id == other.element_id
         )
 
     @property
@@ -49,10 +52,8 @@ class Table(Markdown):
         return len(self.rows) + 1
 
     @property
-    def data(self) -> t.Dict[str, str]:
-        if self.table_id:
-            return {"table-id": self.table_id}
-        return {}
+    def element_id(self) -> t.Optional[str]:
+        return self.ctx.get("element-id")
 
     def dumps(
         self,
@@ -76,5 +77,5 @@ class Table(Markdown):
         headers: str,
         rows: str,
     ) -> MarkdownType:
-        table_id = ctx.get("table-id") if ctx is not None else None
-        return cls(extract(headers, rows), table_id=table_id)
+        element_id = ctx.get("element-id") if ctx is not None else None
+        return cls(extract(headers, rows), element_id=element_id)

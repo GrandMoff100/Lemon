@@ -1,13 +1,17 @@
 import typing as t
 
-from .markdown import Markdown, MarkdownType
+from .markdown import MarkdownType, Text
 
 
-class StyleMixin(Markdown):
+class StyleMixin(Text):
     __ignore__: bool = True
 
     def __init__(self, content: str) -> None:
-        self.content = content.strip()
+        super().__init__(content.strip())
+
+    @property
+    def content(self) -> str:
+        return t.cast(str, self.elements[0])
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({self.content!r})"
