@@ -2,7 +2,7 @@ import json
 import typing as t
 from collections import abc
 
-from .markdown import Markdown, MarkdownType, Renderable, Text
+from .markdown import Markdown, MarkdownType, Renderable
 from .parse import build_lexer, clean, construct
 
 

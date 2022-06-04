@@ -13,7 +13,6 @@ from lemon import (
 )
 
 
-
 def test_header() -> None:
     content = (
         "# My Awesome Project\n\n"
@@ -35,6 +34,7 @@ def test_header() -> None:
             ],
         )
     ]
+
 
 def test_bold_italics_strikethrough() -> None:
     content = (
@@ -65,6 +65,7 @@ def test_bold_italics_strikethrough() -> None:
         )
     ]
 
+
 def test_table() -> None:
     content = (
         "|Name  |  Location|Status|\n"
@@ -83,6 +84,7 @@ def test_table() -> None:
         )
     ]
 
+
 def test_table_with_ctx() -> None:
     content = (
         '<!--{"this-attribute": "should-not-exist", "element-id": "testing-table"}-->\n'
@@ -95,7 +97,6 @@ def test_table_with_ctx() -> None:
     table, *_ = t.cast(t.List[Table], loads(content))
     assert table.element_id == "testing-table"
     assert "this-attribute" not in table.ctx
-
 
 
 def test_inline_code():
@@ -113,6 +114,7 @@ def test_inline_code():
             ".",
         )
     ]
+
 
 def test_code_snippet():
     content = (

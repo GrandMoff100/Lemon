@@ -10,14 +10,13 @@ from lemon import (
     dumps,
 )
 
+
 def test_header() -> None:
     document = Header(
         "My Awesome Project",
         [
             "This project is so awesome that you should go star it on GitHub!",
-            Header(
-                "Description", "You can implement nested sub-headers like magic!"
-            ),
+            Header("Description", "You can implement nested sub-headers like magic!"),
         ],
     )
     expected = (
@@ -27,6 +26,7 @@ def test_header() -> None:
         "You can implement nested sub-headers like magic!\n\n"
     )
     assert dumps(document) == expected
+
 
 def test_bold_italics_strikethrough() -> None:
     document = Text(
@@ -55,6 +55,7 @@ def test_bold_italics_strikethrough() -> None:
         "finally some regular text."
     )
 
+
 def test_table() -> None:
     data = Table(
         [
@@ -71,6 +72,7 @@ def test_table() -> None:
         "|  Angie  |  France  |  Free  |\n"
     )
 
+
 def test_inline_code():
     document = Text(
         "The most telling sign of a python beginner is the use of",
@@ -84,6 +86,7 @@ def test_inline_code():
         "python beginner is the use of "
         "``range(len(obj))`` vs ``enumerate(obj)`` ."
     )
+
 
 def test_code_snippet():
     document = CodeSnippet(
