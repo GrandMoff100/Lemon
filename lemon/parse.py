@@ -3,7 +3,7 @@ import re
 import typing as t
 
 from .lex import Lexer, LexToken, lex
-from .markdown import Markdown, MarkdownType, Newline
+from .markdown import Markdown, MarkdownType, Newline, Text
 from .style import StyleMixin
 
 
@@ -42,7 +42,7 @@ def extract(value: str, cls: t.Type[Markdown]) -> t.Tuple[t.Optional[str], t.Lis
     return t.cast(t.Optional[str], ctx), params
 
 
-def subdivide(markdown: Markdown) -> Markdown:
+def subdivide(markdown: Text) -> Text:
     source, *_ = markdown.elements
     assert isinstance(source, str)
     elements: t.List[MarkdownType] = []
@@ -66,12 +66,12 @@ def subdivide(markdown: Markdown) -> Markdown:
             elements += [pre]
         elements += [
             construct(sub_content, style_class),
-            *subdivide(Markdown(source)).elements,  # type: ignore[list-item]
+            *subdivide(Text(source)).elements,  # type: ignore[list-item]
         ]
     except ValueError:
         if source.strip():
             elements.append(source.strip())
-    return Markdown(*elements)
+    return Text(*elements)
 
 
 def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
@@ -86,8 +86,8 @@ def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
         )
     else:
         element = cls.loads(ctx, *params)
-    # Check for only Markdown type not children.
-    if type(element) == Markdown:  # pylint: disable=unidiomatic-typecheck
+    # Check only for Text objects
+    if type(element) == Text:  # pylint: disable=unidiomatic-typecheck
         return subdivide(element)
     return element
 

@@ -13,6 +13,7 @@ class Header(Markdown):
     ) -> None:
         self.name = name
         self.body = body
+        super().__init__({})
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({self.name!r}, {self.body!r})"
