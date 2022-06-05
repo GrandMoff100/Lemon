@@ -16,7 +16,7 @@ class Markdown:
         _classes = cls.__subclasses__()
         return [_cls for _cls in _classes if not _cls.__ignore__]
 
-    def dumps(self) -> str:
+    def dumps(self, *_, **__) -> str:
         return ""
 
     @classmethod

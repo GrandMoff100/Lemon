@@ -13,7 +13,7 @@ Easily access, serialize, and synthesize markdown information!
 | Inline Code Blocks | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) |
 | Fenced Code Blocks | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) | As of [#6](https://github.com/GrandMoff100/Lemon/pulls/6) |
 | Blockquotes | Not Yet | Not Yet |
-| Links/Images | Not Yet | Not Yet |
+| Links/Images |  As of [#10](https://github.com/GrandMoff100/Lemon/pulls/10) | As of [#10](https://github.com/GrandMoff100/Lemon/pulls/10) |
 | Bulleted Lists | Not Yet | Not Yet |
 | Ordered Lists | Not Yet | Not Yet |
 | Bulleted Checklists | Not Yet | Not Yet |
@@ -24,4 +24,3 @@ Easily access, serialize, and synthesize markdown information!
 | Footnotes | Not Yet | Not Yet |
 | Definition List | Not Yet | Not Yet |
 | Highlighting | Not Yet | Not Yet |
-| ~~Sub/Superscripts~~ | Not Supported (in MD) | Not Supported (in MD) |
