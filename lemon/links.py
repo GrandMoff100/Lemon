@@ -21,7 +21,10 @@ class Link(Markdown):
         super().__init__({})
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__qualname__}({self.face!r}, {self.path!r}, media={self.media!r}, title={self.title!r})"
+        return (
+            f"{self.__class__.__qualname__}"
+            f"({self.face!r}, {self.path!r}, media={self.media!r}, title={self.title!r})"
+        )
 
     def __eq__(self, other: t.Any) -> bool:
         if not isinstance(other, Link):
