@@ -28,6 +28,8 @@ def dumps(
 
 
 def loads(content: str) -> t.List[MarkdownType]:
+    if content == "":
+        return [content]
     lexer = build_lexer()
     lexer.input(content)  # type: ignore[no-untyped-call]
     lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}

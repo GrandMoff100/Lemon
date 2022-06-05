@@ -10,6 +10,8 @@ from lemon import (
     dumps,
 )
 
+from lemon import Link, dumps, loads
+
 
 def test_header() -> None:
     document = Header(
@@ -112,3 +114,19 @@ foobar()
     )
 
     assert dumps(document) == expected
+
+
+def test_links():
+    link = Link(
+        Link(
+            "",
+            "https://example.com/foobars-are-tasty.png",
+            media=True,
+        ),
+        "https://somewebsite.com/",
+    )
+
+    assert (
+        dumps(link)
+        == "[![](https://example.com/foobars-are-tasty.png)](https://somewebsite.com/)"
+    )
