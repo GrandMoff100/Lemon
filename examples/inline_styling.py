@@ -1,6 +1,6 @@
-from lemon import Bold, Italics, Markdown, Strikethrough, dumps, loads
+from lemon import Bold, Italics, Strikethrough, Text, dumps, loads
 
-document = (
+document = Text(
     Bold("My bold text"),
     Italics("is italisized"),
     "this is not",

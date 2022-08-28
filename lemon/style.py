@@ -1,6 +1,6 @@
 import typing as t
 
-from .markdown import MarkdownType, Text
+from .markdown import MarkdownType, Renderable, Text
 
 
 class StyleMixin(Text):
@@ -20,6 +20,10 @@ class StyleMixin(Text):
         if not isinstance(other, self.__class__):
             return False
         return self.content == other.content
+
+    @property
+    def __children__(self) -> t.List[Renderable]:
+        return [self.content]
 
     @classmethod
     def loads(cls, _: t.Optional[t.Dict[str, t.Any]], content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ

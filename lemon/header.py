@@ -23,6 +23,10 @@ class Header(Markdown):
             return False
         return self.name == other.name and self.body == other.body
 
+    @property
+    def __children__(self) -> t.List[Renderable]:
+        return [self.body]
+
     def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> str:
         from .serialize import dumps  # pylint: disable=import-outside-toplevel
 
