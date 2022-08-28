@@ -1,6 +1,5 @@
 from lemon import Link, dumps, loads
 
-
 link = Link(
     Link(
         "",

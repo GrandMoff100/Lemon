@@ -6,13 +6,13 @@ from lemon import (
     Header,
     InlineCode,
     Italics,
+    Link,
     Strikethrough,
     Table,
     Text,
+    dumps,
     loads,
 )
-
-from lemon import Link, dumps, loads
 
 
 def test_header() -> None:
