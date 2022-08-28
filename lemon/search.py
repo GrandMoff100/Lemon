@@ -10,7 +10,7 @@ def contains(markdown: Renderable, obj: MarkdownType) -> bool:
         if isinstance(obj, str):
             if obj in markdown:
                 return True
-    if isinstance(markdown, list) or isinstance(markdown, Markdown):
+    if isinstance(markdown, (Markdown, list)):
         if obj in markdown:
             return True
     return False
