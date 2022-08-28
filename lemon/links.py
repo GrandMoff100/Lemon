@@ -1,7 +1,7 @@
 import typing as t
 
-from .serialize import dumps, loads
 from .markdown import Markdown, MarkdownType
+from .serialize import dumps, loads
 
 
 class Link(Markdown):
