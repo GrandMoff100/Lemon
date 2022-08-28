@@ -1,4 +1,4 @@
-from .markdown import MarkdownType, Renderable
+from .markdown import Markdown, MarkdownType, Renderable
 
 
 def contains(markdown: Renderable, obj: MarkdownType) -> bool:
@@ -6,6 +6,11 @@ def contains(markdown: Renderable, obj: MarkdownType) -> bool:
         for item in markdown:
             if contains(item, obj):
                 return True
-    if obj in markdown:
-        return True
+    if isinstance(markdown, str):
+        if isinstance(obj, str):
+            if obj in markdown:
+                return True
+    if isinstance(markdown, list) or isinstance(markdown, Markdown):
+        if obj in markdown:
+            return True
     return False
