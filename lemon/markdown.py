@@ -11,6 +11,13 @@ class Markdown:
     def __init__(self, ctx: t.Dict[str, t.Any]) -> None:
         self.ctx = ctx
 
+    @property
+    def __children__(self) -> t.List["Renderable"]:
+        return []
+
+    def __contains__(self, other: t.Any) -> bool:
+        return other in self.__children__
+
     @classmethod
     def classes(cls) -> t.List[t.Type["Markdown"]]:
         _classes = cls.__subclasses__()
@@ -25,7 +32,7 @@ class Markdown:
 
 
 MarkdownType = t.Union[Markdown, str]
-Renderable = t.Union[MarkdownType, t.Iterable[MarkdownType]]
+Renderable = t.Union[MarkdownType, t.Iterable["Renderable"]]
 
 
 class Newline(Markdown):
@@ -61,6 +68,10 @@ class Text(Markdown):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({', '.join(map(repr, self.elements))})"
+
+    @property
+    def __children__(self) -> t.List["Renderable"]:
+        return self.elements
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         # Prevents circular import!
