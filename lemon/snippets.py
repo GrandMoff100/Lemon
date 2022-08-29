@@ -9,8 +9,8 @@ class CodeSnippet(Markdown):
     def __init__(
         self,
         content: str,
-        language: t.Optional[str] = None,
-        element_id: t.Optional[str] = None,
+        language: str | None = None,
+        element_id: str | None = None,
     ) -> None:
         self.language = language
         self.content = content.strip()
@@ -35,7 +35,7 @@ class CodeSnippet(Markdown):
     @classmethod
     def loads(  # type: ignore[override] # pylint: disable=arguments-differ
         cls,
-        _: t.Optional[t.Dict[str, t.Any]],
+        _: dict[str, t.Any] | None,
         language: str,
         content: str,
     ) -> Markdown:

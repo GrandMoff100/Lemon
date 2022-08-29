@@ -8,7 +8,7 @@ def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
     return f"  {dumps(element, *args, **kwargs, inline=True)}  "
 
 
-def extract(raw_headers: str, raw_rows: str) -> t.List[t.List[str]]:
+def extract(raw_headers: str, raw_rows: str) -> list[list[str]]:
     _, *columns, _ = map(str.strip, raw_headers.split("|"))
     rows = [columns]
     for row in raw_rows.splitlines():
@@ -23,7 +23,7 @@ class Table(Markdown):
     def __init__(
         self,
         rows: t.Iterable[t.Iterable[MarkdownType]],
-        element_id: t.Optional[str] = None,
+        element_id: str | None = None,
     ) -> None:
         self.columns, *self.rows = tuple(tuple(row) for row in rows)
         if element_id is not None:
@@ -52,7 +52,7 @@ class Table(Markdown):
         return len(self.rows) + 1
 
     @property
-    def element_id(self) -> t.Optional[str]:
+    def element_id(self) -> str | None:
         return self.ctx.get("element-id")
 
     def dumps(
@@ -73,7 +73,7 @@ class Table(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ
         cls,
-        ctx: t.Optional[t.Dict[str, t.Any]],
+        ctx: dict[str, t.Any] | None,
         headers: str,
         rows: str,
     ) -> MarkdownType:
