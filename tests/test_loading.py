@@ -10,7 +10,6 @@ from lemon import (
     Strikethrough,
     Table,
     Text,
-    dumps,
     loads,
 )
 
@@ -79,10 +78,10 @@ def test_table() -> None:
     assert loads(content) == [
         Table(
             [
-                ["Name", "Location", "Status"],
                 ["Ted", "New York", "Busy"],
                 ["Angie", "France", "Free"],
-            ]
+            ],
+            ["Name", "Location", "Status"],
         )
     ]
 
@@ -96,7 +95,7 @@ def test_table_with_ctx() -> None:
         "| Apple | Blueberry |\n"
     )
 
-    table, *_ = t.cast(t.List[Table], loads(content))
+    table, *_ = t.cast(list[Table], loads(content))
     assert table.element_id == "testing-table"
     assert "this-attribute" not in table.ctx
 

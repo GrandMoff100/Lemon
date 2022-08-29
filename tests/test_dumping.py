@@ -9,7 +9,6 @@ from lemon import (
     Table,
     Text,
     dumps,
-    loads,
 )
 
 
@@ -61,10 +60,10 @@ def test_bold_italics_strikethrough() -> None:
 def test_table() -> None:
     data = Table(
         [
-            ["Name", "Location", "Status"],
             ["Ted", "New York", "Busy"],
             ["Angie", "France", "Free"],
-        ]
+        ],
+        ["Name", "Location", "Status"],
     )
 
     assert dumps(data) == (

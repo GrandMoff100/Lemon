@@ -62,8 +62,10 @@ class Text(Markdown):
         ]
 
     def __eq__(self, other: t.Any) -> bool:
-        if not isinstance(other, Text):
+        if not isinstance(other, (Text, str)):
             return False
+        if isinstance(other, str):
+            return other == self.dumps()
         return self.elements == other.elements
 
     def __repr__(self) -> str:
