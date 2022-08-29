@@ -96,7 +96,7 @@ def test_table_with_ctx() -> None:
         "| Apple | Blueberry |\n"
     )
 
-    table, *_ = t.cast(t.List[Table], loads(content))
+    table, *_ = t.cast(list[Table], loads(content))
     assert table.element_id == "testing-table"
     assert "this-attribute" not in table.ctx
 

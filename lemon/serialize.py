@@ -27,7 +27,7 @@ def dumps(
     return result
 
 
-def loads(content: str) -> t.List[MarkdownType]:
+def loads(content: str) -> list[MarkdownType]:
     if content == "":
         return [content]
     lexer = build_lexer()
@@ -41,6 +41,6 @@ def dump(content: Renderable, file: t.TextIO, *args: t.Any, **kwargs: t.Any) -> 
         file.write(dumps(content, *args, **kwargs))
 
 
-def load(file: t.TextIO) -> t.List[MarkdownType]:
+def load(file: t.TextIO) -> list[MarkdownType]:
     with file:
         return loads(file.read())

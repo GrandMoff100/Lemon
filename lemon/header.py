@@ -24,7 +24,7 @@ class Header(Markdown):
         return self.name == other.name and self.body == other.body
 
     @property
-    def __children__(self) -> t.List[Renderable]:
+    def __children__(self) -> list[Renderable]:
         return [self.body]
 
     def dumps(self, *args: t.Any, depth: int = 0, **kwargs: t.Any) -> str:
@@ -36,7 +36,7 @@ class Header(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ
         cls,
-        _: t.Optional[t.Dict[str, t.Any]],
+        _: dict[str, t.Any] | None,
         name: str,
         body: str,
     ) -> MarkdownType:

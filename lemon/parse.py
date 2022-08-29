@@ -7,11 +7,11 @@ from .markdown import Markdown, MarkdownType, Newline, Text
 from .style import StyleMixin
 
 
-def tokens() -> t.Dict[str, t.Type[Markdown]]:
+def tokens() -> dict[str, t.Type[Markdown]]:
     return {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
 
 
-def token_regex() -> t.Generator[t.Tuple[str, str], None, None]:
+def token_regex() -> t.Generator[tuple[str, str], None, None]:
     for name, cls in tokens().items():
         yield f"t_{name}", cls.__ctx_regex__ + cls.__regex__
 
@@ -32,20 +32,20 @@ def build_lexer() -> Lexer:
     return t.cast(Lexer, lex(module=cls))  # type: ignore[no-untyped-call]
 
 
-def extract(value: str, cls: t.Type[Markdown]) -> t.Tuple[t.Optional[str], t.List[str]]:
+def extract(value: str, cls: t.Type[Markdown]) -> tuple[str | None, list[str]]:
     match = re.fullmatch(
         cls.__ctx_regex__ + cls.__regex__,
         value,
     )
     assert match is not None
-    ctx, *params = t.cast(t.List[str], match.groups())
-    return t.cast(t.Optional[str], ctx), params
+    ctx, *params = t.cast(list[str], match.groups())
+    return t.cast(str | None, ctx), params
 
 
 def subdivide(markdown: Text) -> Text:
     source, *_ = markdown.elements
     assert isinstance(source, str)
-    elements: t.List[MarkdownType] = []
+    elements: list[MarkdownType] = []
     try:
         (match, style_class), *_ = sorted(
             filter(
@@ -79,7 +79,7 @@ def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
     if ctx is not None:
         element = cls.loads(
             t.cast(
-                t.Optional[t.Dict[str, t.Any]],
+                dict[str, t.Any] | None,
                 json.loads(ctx),
             ),
             *params,
@@ -92,7 +92,7 @@ def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
     return element
 
 
-def clean(tree: t.List[MarkdownType]) -> t.List[MarkdownType]:
+def clean(tree: list[MarkdownType]) -> list[MarkdownType]:
     tree = [
         element
         for element in tree
