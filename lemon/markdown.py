@@ -32,7 +32,7 @@ class Markdown:
 
 
 MarkdownType = t.Union[Markdown, str]
-Renderable = t.Union[MarkdownType, t.List["Renderable"]]  # type: ignore[misc]
+Renderable = t.Union[Markdown, str, t.List["Renderable"]]  # type: ignore[misc]
 
 
 class Newline(Markdown):

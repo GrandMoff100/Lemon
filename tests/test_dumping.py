@@ -1,3 +1,4 @@
+# pylint: disable=R0801
 from lemon import (
     Bold,
     CodeSnippet,

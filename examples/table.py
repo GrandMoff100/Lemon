@@ -2,10 +2,10 @@ from lemon import Table, dumps, loads
 
 data = Table(
     [
-        ["Name", "Location", "Status"],
         ["Ted", "New York", "Busy"],
         ["Angie", "France", "Free"],
-    ]
+    ],
+    ["Name", "Location", "Status"],
 )
 
 print(content := dumps(data))

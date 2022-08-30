@@ -1,3 +1,4 @@
+# pylint: disable=R0801
 import typing as t
 
 from lemon import (
