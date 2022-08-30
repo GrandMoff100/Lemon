@@ -76,7 +76,7 @@ class Table(Markdown):
         return len(self.rows) + 1
 
     @property
-    def element_id(self) -> t.Optional[str]:
+    def element_id(self) -> str | None:
         return self.ctx.get("element-id")
 
     def dumps(

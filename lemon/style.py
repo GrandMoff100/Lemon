@@ -22,11 +22,11 @@ class StyleMixin(Text):
         return self.content == other.content
 
     @property
-    def __children__(self) -> t.List[Renderable]:
+    def __children__(self) -> list[Renderable]:
         return [self.content]
 
     @classmethod
-    def loads(cls, _: t.Optional[t.Dict[str, t.Any]], content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ
+    def loads(cls, _: dict[str, t.Any] | None, content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ
         return cls(content)
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:

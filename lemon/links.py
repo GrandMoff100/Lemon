@@ -11,7 +11,7 @@ class Link(Markdown):
         self,
         face: MarkdownType,
         path: str,
-        title: t.Optional[str] = None,
+        title: str | None = None,
         media: bool = False,
     ) -> None:
         self.face = face
@@ -48,11 +48,11 @@ class Link(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ, too-many-arguments
         cls,
-        ctx: t.Optional[t.Dict[str, t.Any]],
+        ctx: dict[str, t.Any] | None,
         media: str,
         face: str,
         path: str,
-        title: t.Optional[str],
+        title: str | None,
     ) -> MarkdownType:
         if not title:
             title = None

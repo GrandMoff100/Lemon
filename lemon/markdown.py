@@ -6,20 +6,20 @@ class Markdown:
     __regex__: str = r"((?:.|\n(?<!\n))+)"
     __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
 
-    ctx: t.Dict[str, t.Any]
+    ctx: dict[str, t.Any]
 
-    def __init__(self, ctx: t.Dict[str, t.Any]) -> None:
+    def __init__(self, ctx: dict[str, t.Any]) -> None:
         self.ctx = ctx
 
     @property
-    def __children__(self) -> t.List["Renderable"]:
+    def __children__(self) -> list["Renderable"]:
         return []
 
     def __contains__(self, other: t.Any) -> bool:
         return other in self.__children__
 
     @classmethod
-    def classes(cls) -> t.List[t.Type["Markdown"]]:
+    def classes(cls) -> list[t.Type["Markdown"]]:
         _classes = cls.__subclasses__()
         return [_cls for _cls in _classes if not _cls.__ignore__]
 
@@ -27,7 +27,7 @@ class Markdown:
         return ""
 
     @classmethod
-    def loads(cls, ctx: t.Optional[t.Dict[str, t.Any]], content: str) -> "MarkdownType":
+    def loads(cls, ctx: dict[str, t.Any] | None, content: str) -> "MarkdownType":
         return Text.loads(ctx, content)
 
 
@@ -46,7 +46,7 @@ class Newline(Markdown):
         return "\n"
 
     @classmethod
-    def loads(cls, _: t.Dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]  # pylint: disable=arguments-differ
+    def loads(cls, _: dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]  # pylint: disable=arguments-differ
         return cls()
 
 
@@ -72,7 +72,7 @@ class Text(Markdown):
         return f"{self.__class__.__qualname__}({', '.join(map(repr, self.elements))})"
 
     @property
-    def __children__(self) -> t.List["Renderable"]:
+    def __children__(self) -> list["Renderable"]:
         return self.elements
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
@@ -94,7 +94,7 @@ class Text(Markdown):
     @classmethod
     def loads(  # pylint: disable=arguments-differ
         cls,
-        _: t.Optional[t.Dict[str, t.Any]],
+        _: dict[str, t.Any] | None,
         *elements: "MarkdownType",
     ) -> "MarkdownType":
         return cls(*elements)
