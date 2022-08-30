@@ -1,4 +1,4 @@
-from lemon import CodeSnippet, InlineCode, Text, dumps, loads
+from lemon import CodeBlock, InlineCode, Text, dumps, loads
 
 document = Text(
     "The most telling sign of a python beginner is the use of",
@@ -11,7 +11,7 @@ print(content := dumps(document))
 
 print(loads(content))
 
-snippet = CodeSnippet(
+snippet = CodeBlock(
     """
 import python
 

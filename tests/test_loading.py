@@ -2,7 +2,7 @@ import typing as t
 
 from lemon import (
     Bold,
-    CodeSnippet,
+    CodeBlock,
     Header,
     InlineCode,
     Italics,
@@ -131,7 +131,7 @@ def test_code_snippet():
     )
 
     assert loads(content) == [
-        CodeSnippet(
+        CodeBlock(
             'import math\n\ndef topsecretcode():\n    print("Hello World")\n\nfoobar()',
             "python",
         )
