@@ -3,8 +3,8 @@ import typing as t
 from .markdown import Markdown
 
 
-class CodeSnippet(Markdown):
-    __regex__: str = r"```((?:.*)?)\n((?:.|\n)+)```"
+class CodeBlock(Markdown):
+    __regex__: str = r"```((?:.*)?)\n((?:.|\n)*?)```"
 
     def __init__(
         self,
@@ -20,7 +20,7 @@ class CodeSnippet(Markdown):
             super().__init__({})
 
     def __eq__(self, other: t.Any) -> bool:
-        if not isinstance(other, CodeSnippet):
+        if not isinstance(other, CodeBlock):
             return False
         return self.language == other.language and self.content == other.content
 
@@ -40,4 +40,4 @@ class CodeSnippet(Markdown):
         content: str,
     ) -> Markdown:
         language = language.strip()
-        return cls(content, None if not language else language)
+        return cls(content, language if language else None)

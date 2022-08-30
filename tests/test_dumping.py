@@ -1,7 +1,7 @@
 # pylint: disable=R0801
 from lemon import (
     Bold,
-    CodeSnippet,
+    CodeBlock,
     Header,
     InlineCode,
     Italics,
@@ -91,7 +91,7 @@ def test_inline_code():
 
 
 def test_code_snippet():
-    document = CodeSnippet(
+    document = CodeBlock(
         """
 import math
 
