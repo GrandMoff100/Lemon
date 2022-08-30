@@ -32,7 +32,7 @@ class Markdown:
 
 
 MarkdownType = t.Union[Markdown, str]
-Renderable = t.Union[MarkdownType, list["Renderable"]]  # type: ignore[misc]
+Renderable = t.Union[Markdown, str, t.List["Renderable"]]  # type: ignore[misc]
 
 
 class Newline(Markdown):
@@ -62,8 +62,10 @@ class Text(Markdown):
         ]
 
     def __eq__(self, other: t.Any) -> bool:
-        if not isinstance(other, Text):
+        if not isinstance(other, (Text, str)):
             return False
+        if isinstance(other, str):
+            return other == self.dumps()
         return self.elements == other.elements
 
     def __repr__(self) -> str:

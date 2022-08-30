@@ -1,3 +1,4 @@
+# pylint: disable=R0801
 import typing as t
 
 from lemon import (
@@ -10,7 +11,6 @@ from lemon import (
     Strikethrough,
     Table,
     Text,
-    dumps,
     loads,
 )
 
@@ -79,10 +79,10 @@ def test_table() -> None:
     assert loads(content) == [
         Table(
             [
-                ["Name", "Location", "Status"],
                 ["Ted", "New York", "Busy"],
                 ["Angie", "France", "Free"],
-            ]
+            ],
+            ["Name", "Location", "Status"],
         )
     ]
 

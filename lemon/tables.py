@@ -1,31 +1,55 @@
+import re
 import typing as t
 
-from .markdown import Markdown, MarkdownType
-from .serialize import dumps
+from .markdown import Markdown, MarkdownType, Renderable
+from .serialize import dumps, loads
 
 
-def pad(element: MarkdownType, *args: t.Any, **kwargs: t.Any) -> str:
+def pad(element: Renderable, *args: t.Any, **kwargs: t.Any) -> str:
     return f"  {dumps(element, *args, **kwargs, inline=True)}  "
 
 
-def extract(raw_headers: str, raw_rows: str) -> list[list[str]]:
+def match_alignment(alignment: str) -> str:
+    if re.search(r":-+:", alignment):
+        return "center"
+    if re.search(r":-+", alignment):
+        return "right"
+    if re.search(r"-+:", alignment):
+        return "left"
+    return "default"
+
+
+def extract(
+    raw_headers: str,
+    raw_alignment: str,
+    raw_rows: str,
+) -> tuple[list[list[MarkdownType]], list[MarkdownType], list[str]]:
     _, *columns, _ = map(str.strip, raw_headers.split("|"))
-    rows = [columns]
+    _, *alignment, _ = map(str.strip, raw_alignment.split("|"))
+    rows = []
     for row in raw_rows.splitlines():
         _, *elements, _ = map(str.strip, row.split("|"))
-        rows.append(elements)
-    return rows
+        rows.append(list(map(lambda element: loads(element)[0], elements)))
+    return (
+        rows,
+        list(map(lambda column: loads(column)[0], columns)),
+        list(map(match_alignment, alignment)),
+    )
 
 
 class Table(Markdown):
-    __regex__: str = r"(\|(?:.+\|)+)\n\|(?:-+\|)+\n((?:\|(?:.+\|)+\n)+)"
+    __regex__: str = r"(\|(?:.+\|)+)\n\|(:?-+:?\|)+\n((?:\|(?:.+\|)+\n)+)"
 
     def __init__(
         self,
-        rows: t.Iterable[t.Iterable[MarkdownType]],
+        rows: t.Sequence[t.Sequence[Renderable]],
+        columns: t.Sequence[Renderable],
+        alignment: t.Sequence[str] = (),
         element_id: str | None = None,
     ) -> None:
-        self.columns, *self.rows = tuple(tuple(row) for row in rows)
+        self.columns = tuple(columns)
+        self.rows = tuple(tuple(row) for row in rows)
+        self.alignment = alignment if alignment else ("default",) * len(columns)
         if element_id is not None:
             super().__init__({"element-id": element_id})
         else:
@@ -61,10 +85,13 @@ class Table(Markdown):
         **kwargs: t.Any,
     ) -> str:
         headers = [pad(header, *args, **kwargs) for header in self.columns]
-        table = [
-            f"|{'|'.join(headers)}|",
-            f"|{'|'.join(['-' * len(item) for item in headers])}|",
-        ] + [
+        alignment = [
+            (":" if alignment in ("left", "center") else "")
+            + "-" * len(item)
+            + (":" if alignment in ("right", "center") else "")
+            for item, alignment in zip(headers, self.alignment)
+        ]
+        table = [f"|{'|'.join(headers)}|", f"|{'|'.join(alignment)}|",] + [
             f"|{'|'.join([pad(item, *args, **kwargs) for item in row])}|"
             for row in self.rows
         ]
@@ -73,9 +100,11 @@ class Table(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ
         cls,
-        ctx: dict[str, t.Any] | None,
-        headers: str,
-        rows: str,
+        ctx: t.Optional[dict[str, t.Any]],
+        raw_headers: str,
+        raw_alignment: str,
+        raw_rows: str,
     ) -> MarkdownType:
         element_id = ctx.get("element-id") if ctx is not None else None
-        return cls(extract(headers, rows), element_id=element_id)
+        rows, columns, alignment = extract(raw_headers, raw_alignment, raw_rows)
+        return cls(rows, columns, alignment, element_id=element_id)
