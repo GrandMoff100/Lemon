@@ -14,18 +14,17 @@ from lemon import (
 
 
 def test_header() -> None:
-    document = Header(
-        "My Awesome Project",
-        [
-            "This project is so awesome that you should go star it on GitHub!",
-            Header("Description", "You can implement nested sub-headers like magic!"),
-        ],
-    )
+    document = [
+        Header("My Awesome Project"),
+        "This project is so awesome that you should go star it on GitHub!",
+        Header("Description", 2),
+        "You can implement nested sub-headers with ease!",
+    ]
     expected = (
         "# My Awesome Project\n\n"
         "This project is so awesome that you should go star it on GitHub!\n\n"
         "## Description\n\n"
-        "You can implement nested sub-headers like magic!\n\n"
+        "You can implement nested sub-headers with ease!\n\n"
     )
     assert dumps(document) == expected
 
