@@ -1,6 +1,6 @@
 import typing as t
 
-from .markdown import Markdown, MarkdownType
+from .markdown import Markdown, MarkdownType, Renderable
 from .serialize import dumps, loads
 
 
@@ -36,7 +36,7 @@ class Link(Markdown):
             and self.media == other.media
         )
 
-    def dumps(self, *args, **kwargs) -> str:
+    def dumps(self, *args: Renderable, **kwargs: t.Any) -> str:
         media = "!" if self.media else ""
         face = dumps(self.face, *args, **kwargs).strip()
         if self.title is not None:

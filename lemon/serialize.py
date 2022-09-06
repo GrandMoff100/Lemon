@@ -31,7 +31,7 @@ def loads(content: str) -> list[MarkdownType]:
     if content == "":
         return [content]
     lexer = build_lexer()
-    lexer.input(content)  # type: ignore[no-untyped-call]
+    lexer.input(content)
     lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
     return clean([construct(token.value, lookup[token.type]) for token in lexer])
 
