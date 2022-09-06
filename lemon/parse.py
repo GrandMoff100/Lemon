@@ -29,7 +29,7 @@ def build_lexer() -> Lexer:
     cls = type("LemonLexer", (), {})
     for name, value in order_preserved_attributes:
         setattr(cls, name, value)
-    return t.cast(Lexer, lex(module=cls))  # type: ignore[no-untyped-call]
+    return t.cast(Lexer, lex(module=cls))
 
 
 def extract(value: str, cls: t.Type[Markdown]) -> tuple[str | None, list[str]]:
