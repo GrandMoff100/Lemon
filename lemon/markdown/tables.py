@@ -107,7 +107,7 @@ class Table(Markdown):
             f"|{'|'.join([pad(item, *args, **kwargs) for item in row])}|"
             for row in self.rows
         ]
-        return "\n".join(table) + "\n"
+        return "\n" + "\n".join(table) + "\n\n"
 
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ

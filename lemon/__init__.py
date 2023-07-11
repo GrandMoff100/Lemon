@@ -1,10 +1,22 @@
-from .codeblock import CodeBlock
-from .header import Header
-from .links import Link
-from .markdown import Markdown, Newline, Text
-from .serialize import dump, dumps, load, loads
-from .style import Bold, InlineCode, Italics, Strikethrough
-from .tables import Table
+from .markdown import (
+    Bold,
+    CodeBlock,
+    Header,
+    InlineCode,
+    Italics,
+    Link,
+    Markdown,
+    Newline,
+    Strikethrough,
+    Table,
+    Text,
+    dump,
+    dumps,
+    load,
+    loads,
+)
+from .search import contains, find
+
 
 __all__ = (
     "dumps",
@@ -22,4 +34,5 @@ __all__ = (
     "Text",
     "Newline",
     "Link",
+    "contains",
 )

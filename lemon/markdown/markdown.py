@@ -81,14 +81,14 @@ class Text(Markdown):
 
         kwargs["inline"] = True
         return " ".join(
-            [
+            [""] + [
                 dumps(
                     element,
                     *args,
                     **kwargs,
                 )
                 for element in self.elements
-            ]
+            ] + [""]
         )
 
     @classmethod
