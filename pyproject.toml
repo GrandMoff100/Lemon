@@ -4,6 +4,9 @@ name = "lemon"
 version = "0.1.0"
 description = "Easily access, serialize, and synthesize markdown information!"
 authors = ["GrandMoff100 <minecraftcrusher100@gmail.com>"]
+packages = [
+    { include = "lemon" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
