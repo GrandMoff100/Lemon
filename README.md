@@ -1,4 +1,4 @@
-# 🍋 Lemon 🍋
+# 🍋 Lemon MD 🍋
 
 Easily access, serialize, and synthesize markdown information!
 
@@ -35,7 +35,7 @@ Easily access, serialize, and synthesize markdown information!
 ## Installation
 
 ```bash
-pip install lemon
+pip install lemon-md
 ```
 
 ## Usage
