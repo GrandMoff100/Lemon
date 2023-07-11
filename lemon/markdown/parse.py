@@ -92,7 +92,7 @@ def construct(value: str, cls: t.Type[Markdown]) -> MarkdownType:
     return element
 
 
-def clean(tree: list[MarkdownType]) -> list[MarkdownType]:
+def scrub(tree: list[MarkdownType]) -> list[MarkdownType]:
     tree = [
         element
         for element in tree

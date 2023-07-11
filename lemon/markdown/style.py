@@ -33,32 +33,32 @@ class StyleMixin(Text):
         # Prevents circular import!
         from .serialize import dumps  # pylint: disable=import-outside-toplevel
 
-        return dumps(self.content, *args, **kwargs).strip()
+        return dumps(self.content.strip(), *args, **kwargs).strip()
 
 
 class Bold(StyleMixin):
     __regex__: str = r"(?<!\\)\*\*(.+?)(?<!\\)\*\*"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        return f"**{super().dumps(*args, **kwargs)}**"
+        return f" **{super().dumps(*args, **kwargs)}** "
 
 
 class Italics(StyleMixin):
     __regex__: str = r"(?<!\\)\*(.+?)(?<!\\)\*"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        return f"*{super().dumps(*args, **kwargs)}*"
+        return f" *{super().dumps(*args, **kwargs)}* "
 
 
 class Strikethrough(StyleMixin):
     __regex__: str = r"(?<!\\)~~(.+?)(?<!\\)~~"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        return f"~~{super().dumps(*args, **kwargs)}~~"
+        return f" ~~{super().dumps(*args, **kwargs)}~~ "
 
 
 class InlineCode(StyleMixin):
     __regex__: str = r"(?:(?<!\\)``(?!`)(.+?)(?<!\\)``)|(?:(?<!\\)`(?!`)\1(?<!\\)`)"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        return f"``{super().dumps(*args, **kwargs)}``"
+        return f" ``{super().dumps(*args, **kwargs)}`` "
