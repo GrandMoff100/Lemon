@@ -29,10 +29,19 @@ def extract(
     rows = []
     for row in raw_rows.splitlines():
         _, *elements, _ = map(str.strip, row.split("|"))
-        rows.append(list(map(lambda element: t.cast(list[Markdown | str], loads(element))[0], elements)))
+        rows.append(
+            list(
+                map(
+                    lambda element: t.cast(list[Markdown | str], loads(element))[0],
+                    elements,
+                )
+            )
+        )
     return (
         rows,
-        list(map(lambda column: t.cast(list[Markdown | str], loads(column))[0], columns)),
+        list(
+            map(lambda column: t.cast(list[Markdown | str], loads(column))[0], columns)
+        ),
         list(map(match_alignment, alignment)),
     )
 
@@ -91,7 +100,10 @@ class Table(Markdown):
             + (":" if alignment in ("right", "center") else "")
             for item, alignment in zip(headers, self.alignment)
         ]
-        table = [f"|{'|'.join(headers)}|", f"|{'|'.join(alignment)}|",] + [
+        table = [
+            f"|{'|'.join(headers)}|",
+            f"|{'|'.join(alignment)}|",
+        ] + [
             f"|{'|'.join([pad(item, *args, **kwargs) for item in row])}|"
             for row in self.rows
         ]
