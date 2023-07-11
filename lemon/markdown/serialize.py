@@ -6,13 +6,13 @@ from collections import abc
 from .markdown import Markdown, Renderable
 from .parse import build_lexer, clean, construct
 
-
 CLEANER_PATTERNS = [
     (r"^ +(.*)$", r"\1", re.MULTILINE),
     (r"^(.*) +$", r"\1", re.MULTILINE),
     (r"\n{3}", r"\n\n", re.NOFLAG),
     (r" {2}", r" ", re.NOFLAG),
 ]
+
 
 def _clean(rendered: str) -> str:
     while True:

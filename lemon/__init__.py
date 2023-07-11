@@ -15,8 +15,7 @@ from .markdown import (
     load,
     loads,
 )
-from .search import contains, find
-
+from .search import contains  # , find
 
 __all__ = (
     "dumps",
