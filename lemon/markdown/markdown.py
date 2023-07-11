@@ -32,7 +32,13 @@ class Markdown:
 
 
 MarkdownType = t.Union[Markdown, str]
-Renderable = t.Union[Markdown, str, list[Markdown | str], list[Markdown], list[str]]  # type: ignore[misc]
+Renderable = t.Union[
+    Markdown,
+    str,
+    list[Markdown | str],
+    list[Markdown],
+    list[str],
+]  # type: ignore[misc]
 
 
 class Newline(Markdown):
@@ -81,8 +87,7 @@ class Text(Markdown):
 
         kwargs["inline"] = True
         return " ".join(
-            [""]
-            + [
+            [
                 dumps(
                     element,
                     *args,
@@ -90,7 +95,6 @@ class Text(Markdown):
                 )
                 for element in self.elements
             ]
-            + [""]
         )
 
     @classmethod

@@ -3,8 +3,14 @@ import re
 import typing as t
 from collections import abc
 
+from .codeblock import CodeBlock
 from .markdown import Markdown, Renderable
-from .parse import build_lexer, clean, construct
+from .parse import build_lexer, construct, scrub
+
+CLEANING_IGNORE_PATTERNS = [
+    r"<!--.*?-->",  # HTML comments
+    CodeBlock.__regex__,  # Code blocks
+]
 
 CLEANER_PATTERNS = [
     (r"^ +(.*)$", r"\1", re.MULTILINE),
@@ -18,7 +24,16 @@ def _clean(rendered: str) -> str:
     while True:
         new_rendered = rendered
         for pattern, replacement, flags in CLEANER_PATTERNS:
-            new_rendered = re.sub(pattern, replacement, new_rendered, flags=flags)
+            if match := re.search(pattern, new_rendered, flags=flags):
+                if any(
+                    ignore_match.start() <= match.start() <= ignore_match.end()
+                    for ignore_pattern in CLEANING_IGNORE_PATTERNS
+                    for ignore_match in re.finditer(
+                        ignore_pattern, new_rendered, flags=flags
+                    )
+                ):
+                    continue
+                new_rendered = re.sub(pattern, replacement, new_rendered, flags=flags)
         if new_rendered != rendered:
             rendered = new_rendered
         else:
@@ -56,7 +71,7 @@ def loads(content: str) -> Renderable:
     lexer = build_lexer()
     lexer.input(content)  # type: ignore[no-untyped-call]
     lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
-    return clean([construct(token.value, lookup[token.type]) for token in lexer])
+    return scrub([construct(token.value, lookup[token.type]) for token in lexer])
 
 
 def dump(content: Renderable, file: t.TextIO, *args: t.Any, **kwargs: t.Any) -> None:

@@ -1,4 +1,4 @@
-from typing import Type
+# from typing import Type
 
 from .markdown.markdown import Markdown, MarkdownType, Renderable
 

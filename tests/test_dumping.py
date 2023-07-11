@@ -68,10 +68,12 @@ def test_table() -> None:
     )
 
     assert dumps(data) == (
-        "|  Name  |  Location  |  Status  |\n"
+        "\n"
+        "| Name | Location | Status |\n"
         "|--------|------------|----------|\n"
-        "|  Ted  |  New York  |  Busy  |\n"
-        "|  Angie  |  France  |  Free  |\n"
+        "| Ted | New York | Busy |\n"
+        "| Angie | France | Free |\n"
+        "\n"
     )
 
 

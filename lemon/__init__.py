@@ -10,28 +10,9 @@ from .markdown import (
     Strikethrough,
     Table,
     Text,
-    dump,
-    dumps,
-    load,
-    loads,
 )
+from .markdown import __all__ as _markdown_all
+from .markdown import dump, dumps, load, loads
 from .search import contains  # , find
 
-__all__ = (
-    "dumps",
-    "loads",
-    "dump",
-    "load",
-    "CodeBlock",
-    "Markdown",
-    "Table",
-    "Header",
-    "Bold",
-    "Italics",
-    "InlineCode",
-    "Strikethrough",
-    "Text",
-    "Newline",
-    "Link",
-    "contains",
-)
+__all__ = ("contains",) + _markdown_all
