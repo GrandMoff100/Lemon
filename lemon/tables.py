@@ -29,10 +29,10 @@ def extract(
     rows = []
     for row in raw_rows.splitlines():
         _, *elements, _ = map(str.strip, row.split("|"))
-        rows.append(list(map(lambda element: loads(element)[0], elements)))
+        rows.append(list(map(lambda element: t.cast(list[Markdown | str], loads(element))[0], elements)))
     return (
         rows,
-        list(map(lambda column: loads(column)[0], columns)),
+        list(map(lambda column: t.cast(list[Markdown | str], loads(column))[0], columns)),
         list(map(match_alignment, alignment)),
     )
 

@@ -32,7 +32,7 @@ class Markdown:
 
 
 MarkdownType = t.Union[Markdown, str]
-Renderable = t.Union[Markdown, str, t.List["Renderable"]]  # type: ignore[misc]
+Renderable = t.Union[Markdown, str, list[Markdown | str]]  # type: ignore[misc]
 
 
 class Newline(Markdown):
@@ -53,7 +53,7 @@ class Newline(Markdown):
 class Text(Markdown):
     def __init__(
         self,
-        *elements: "Renderable",
+        *elements: Renderable,
     ) -> None:
         super().__init__({})
         self.elements = [

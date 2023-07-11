@@ -56,4 +56,4 @@ class Link(Markdown):
     ) -> MarkdownType:
         if not title:
             title = None
-        return cls(face=loads(face)[0], path=path, title=title, media=bool(media))
+        return cls(face=t.cast(list[Markdown | str], loads(face))[0], path=path, title=title, media=bool(media))
