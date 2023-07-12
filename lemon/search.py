@@ -4,6 +4,29 @@ from typing import Any, Generator, Type, cast
 from .markdown.markdown import Markdown, MarkdownType, Renderable
 
 
+def _match_query(
+    markdown: Markdown,
+    tag: Type[Markdown] | None,
+    query: MarkdownType | None,
+    **ctx: Any,
+) -> bool:
+    conditions = []
+    if tag is not None:
+        conditions.append(
+            type(markdown) == tag  # pylint: disable=unidiomatic-typecheck
+        )
+    if query is not None:
+        conditions.append(query in markdown)
+    if ctx:
+        conditions.append(
+            all(
+                markdown.ctx[key] == value if key in markdown.ctx else False
+                for key, value in ctx.items()
+            )
+        )
+    return all(conditions)
+
+
 def finditer(
     markdown: Renderable | list[Renderable],
     tag: Type[Markdown] | None = None,
@@ -12,21 +35,7 @@ def finditer(
     **ctx: Any,
 ) -> Generator[Renderable, None, None]:
     if isinstance(markdown, Markdown):
-        conditions = []
-        if tag is not None:
-            conditions.append(
-                type(markdown) == tag  # pylint: disable=unidiomatic-typecheck
-            )
-        if query is not None:
-            conditions.append(query in markdown)
-        if ctx:
-            conditions.append(
-                all(
-                    markdown.ctx[key] == value if key in markdown.ctx else False
-                    for key, value in ctx.items()
-                )
-            )
-        if all(conditions):
+        if _match_query(markdown, tag=tag, query=query, **ctx):
             yield markdown
         if markdown.__children__:
             yield from finditer(
