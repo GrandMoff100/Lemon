@@ -41,6 +41,36 @@ def _clean(rendered: str) -> str:
     return rendered
 
 
+def indexed_renderable(renderable: Renderable) -> Renderable:
+    _asign_parents(renderable)
+    _asign_siblings(renderable)
+    return renderable
+
+
+def _asign_parents(renderable: Renderable) -> None:
+    if isinstance(renderable, Markdown):
+        for child in renderable.__children__:
+            if isinstance(child, Markdown):
+                child.parent = renderable
+                _asign_parents(child)
+    elif isinstance(renderable, abc.Iterable):
+        for child in renderable:
+            _asign_parents(child)
+
+
+def _asign_siblings(renderable: Renderable) -> None:
+    if isinstance(renderable, Markdown):
+        for child in renderable.__children__:
+            _asign_siblings(child)
+    elif isinstance(renderable, abc.Iterable):
+        prev = None
+        for child in renderable:
+            if prev is not None:
+                prev.next_sibling = child
+                child.previous_sibling = prev
+            prev = child
+
+
 def dumps(
     content: Renderable,
     *args: t.Any,
@@ -71,7 +101,9 @@ def loads(content: str) -> Renderable:
     lexer = build_lexer()
     lexer.input(content)  # type: ignore[no-untyped-call]
     lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
-    return scrub([construct(token.value, lookup[token.type]) for token in lexer])
+    return indexed_renderable(
+        scrub([construct(token.value, lookup[token.type]) for token in lexer])
+    )
 
 
 def dump(content: Renderable, file: t.TextIO, *args: t.Any, **kwargs: t.Any) -> None:

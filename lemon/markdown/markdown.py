@@ -1,4 +1,48 @@
 import typing as t
+from collections import defaultdict
+
+
+class CaseInsensitiveDict(dict):
+    @staticmethod
+    def _scrub_key(key: str) -> str:
+        return key.lower().replace("-", "_")
+
+    def __setitem__(self, key: t.Any, value: t.Any) -> None:
+        if not isinstance(key, str):
+            raise TypeError("Key must be a string")
+        super().__setitem__(self._scrub_key(key), value)
+
+    def __getitem__(self, key: t.Any) -> t.Any:
+        if not isinstance(key, str):
+            raise TypeError("Key must be a string")
+        return super().__getitem__(self._scrub_key(key))
+
+    def __delitem__(self, key: t.Any) -> None:
+        if not isinstance(key, str):
+            raise TypeError("Key must be a string")
+        return super().__delitem__(self._scrub_key(key))
+
+    def __contains__(self, key: t.Any) -> bool:
+        if not isinstance(key, str):
+            return False
+        return super().__contains__(self._scrub_key(key))
+
+
+class Context:
+    def __init__(self) -> None:
+        self._storage: dict[Markdown, dict[str, t.Any]] = defaultdict(
+            CaseInsensitiveDict
+        )
+
+    def __get__(self, instance: "Markdown", _: t.Type["Markdown"]) -> dict[str, t.Any]:
+        return self._storage[instance]
+
+    def __set__(self, instance: "Markdown", ctx: dict[str, t.Any]) -> None:
+        for key, value in ctx.items():
+            self._storage[instance][key] = value
+
+    def __delete__(self, instance: "Markdown") -> None:
+        del self._storage[instance]
 
 
 class Markdown:
@@ -6,7 +50,11 @@ class Markdown:
     __regex__: str = r"((?:.|\n(?<!\n))+)"
     __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
 
-    ctx: dict[str, t.Any]
+    ctx: dict[str, t.Any] = t.cast(dict[str, t.Any], Context())
+
+    parent: t.Optional["Markdown"] = None
+    previous_sibling: t.Optional["Markdown"] = None
+    next_sibling: t.Optional["Markdown"] = None
 
     def __init__(self, ctx: dict[str, t.Any]) -> None:
         self.ctx = ctx
@@ -17,6 +65,9 @@ class Markdown:
 
     def __contains__(self, other: t.Any) -> bool:
         return other in self.__children__
+
+    def __hash__(self) -> int:
+        return hash(self.dumps())
 
     @classmethod
     def classes(cls) -> list[t.Type["Markdown"]]:
@@ -61,11 +112,11 @@ class Text(Markdown):
         self,
         *elements: Renderable,
     ) -> None:
-        super().__init__({})
         self.elements = [
             element if not isinstance(element, str) else element.strip()
             for element in elements
         ]
+        super().__init__({})
 
     def __eq__(self, other: t.Any) -> bool:
         if not isinstance(other, (Text, str)):
@@ -73,6 +124,9 @@ class Text(Markdown):
         if isinstance(other, str):
             return other == self.dumps()
         return self.elements == other.elements
+
+    def __hash__(self) -> int:
+        return hash(self.dumps())
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}({', '.join(map(repr, self.elements))})"

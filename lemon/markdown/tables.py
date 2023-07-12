@@ -59,6 +59,7 @@ class Table(Markdown):
         self.columns = tuple(columns)
         self.rows = tuple(tuple(row) for row in rows)
         self.alignment = alignment if alignment else ("default",) * len(columns)
+        self._element_id = element_id
         if element_id is not None:
             super().__init__({"element-id": element_id})
         else:
@@ -76,6 +77,9 @@ class Table(Markdown):
             and self.element_id == other.element_id
         )
 
+    def __hash__(self) -> int:
+        return hash(self.dumps())
+
     @property
     def width(self) -> int:
         return len(self.columns)
@@ -86,7 +90,7 @@ class Table(Markdown):
 
     @property
     def element_id(self) -> str | None:
-        return self.ctx.get("element-id")
+        return self._element_id
 
     def dumps(
         self,

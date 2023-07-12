@@ -1,6 +1,6 @@
 import typing as t
 
-from .markdown import Markdown, MarkdownType
+from .markdown import Markdown, MarkdownType, Renderable
 from .serialize import dumps, loads
 
 
@@ -35,6 +35,16 @@ class Link(Markdown):
             and self.title == other.title
             and self.media == other.media
         )
+
+    def __hash__(self) -> int:
+        return hash(self.dumps())
+
+    @property
+    def __children__(self) -> list[Renderable]:
+        children: list[Renderable] = [self.face, self.path]
+        if self.title is not None:
+            children.append(self.title)
+        return children
 
     def dumps(self, *args, **kwargs) -> str:
         media = "!" if self.media else ""

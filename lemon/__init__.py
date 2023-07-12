@@ -12,7 +12,7 @@ from .markdown import (
     Text,
 )
 from .markdown import __all__ as _markdown_all
-from .markdown import dump, dumps, load, loads
-from .search import contains  # , find
+from .markdown import dump, dumps, indexed_renderable, load, loads
+from .search import find, findall, finditer
 
-__all__ = ("contains",) + _markdown_all
+__all__ = ("find", "findall", "finditer") + _markdown_all

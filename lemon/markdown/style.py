@@ -21,6 +21,9 @@ class StyleMixin(Text):
             return False
         return self.content == other.content
 
+    def __hash__(self) -> int:
+        return hash(self.dumps())
+
     @property
     def __children__(self) -> list[Renderable]:
         return [self.content]
