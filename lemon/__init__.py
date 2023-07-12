@@ -13,6 +13,6 @@ from .markdown import (
 )
 from .markdown import __all__ as _markdown_all
 from .markdown import dump, dumps, load, loads
-from .search import contains  # , find
+from .search import find, findall, finditer
 
-__all__ = ("contains",) + _markdown_all
+__all__ = ("find", "findall", "finditer") + _markdown_all

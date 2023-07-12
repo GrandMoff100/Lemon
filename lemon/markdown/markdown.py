@@ -8,6 +8,10 @@ class Markdown:
 
     ctx: dict[str, t.Any]
 
+    parent: t.Optional["Markdown"] = None
+    previous_sibling: t.Optional["Markdown"] = None
+    next_sibling: t.Optional["Markdown"] = None
+
     def __init__(self, ctx: dict[str, t.Any]) -> None:
         self.ctx = ctx
 

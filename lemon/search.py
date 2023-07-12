@@ -1,33 +1,52 @@
-# from typing import Type
+from collections import abc
+from typing import Any, Generator, Type
 
 from .markdown.markdown import Markdown, MarkdownType, Renderable
 
 
-def contains(markdown: Renderable, obj: MarkdownType) -> bool:
-    if isinstance(markdown, list):
+def finditer(
+    markdown: Renderable,
+    tag: Type[Markdown] | None = None,
+    query: MarkdownType | None = None,
+    **ctx: Any,
+) -> Generator[MarkdownType, None, None]:
+    if isinstance(markdown, Markdown):
+        conditions = []
+        if tag is not None:
+            conditions.append(isinstance(markdown, tag))
+        if query is not None:
+            conditions.append(query in markdown)
+        if ctx:
+            conditions.append(
+                all(markdown.ctx[key] == value for key, value in ctx.items())
+            )
+        if all(conditions):
+            yield markdown
+    elif isinstance(markdown, abc.Iterable):
         for item in markdown:
-            if contains(item, obj):
-                return True
-    if isinstance(markdown, str):
-        if isinstance(obj, str):
-            if obj in markdown:
-                return True
-    if isinstance(markdown, (Markdown, list)):
-        if obj in markdown:
-            return True
-    return False
+            if (results := finditer(item, tag=tag, query=query, **ctx)) is not None:
+                yield from results
+    elif isinstance(markdown, str):
+        if isinstance(query, str):
+            if query in markdown:
+                yield markdown
 
 
-# def find(markdown: Renderable, obj: Type[MarkdownType]) -> MarkdownType | None:
-#     if isinstance(markdown, list):
-#         for item in markdown:
-#             if find(item, obj):
-#                 return item
-#     if isinstance(markdown, str):
-#         if isinstance(obj, str):
-#             if obj in markdown:
-#                 return markdown
-#     if isinstance(markdown, (Markdown, list)):
-#         if obj in markdown:
-#             return markdown
-#     return None
+def findall(
+    markdown: Renderable,
+    tag: Type[Markdown] | None = None,
+    query: MarkdownType | None = None,
+    **ctx: Any,
+) -> list[MarkdownType]:
+    return list(finditer(markdown, tag=tag, query=query, **ctx))
+
+
+def find(
+    markdown: Renderable,
+    tag: Type[Markdown] | None = None,
+    query: MarkdownType | None = None,
+    **ctx: Any,
+) -> MarkdownType | None:
+    for item in finditer(markdown, tag=tag, query=query, **ctx):
+        return item
+    return None
