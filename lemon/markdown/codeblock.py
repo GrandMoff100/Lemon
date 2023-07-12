@@ -24,6 +24,9 @@ class CodeBlock(Markdown):
             return False
         return self.language == other.language and self.content == other.content
 
+    def __hash__(self) -> int:
+        return hash(self.dumps())
+
     def __repr__(self) -> str:
         params = [repr(param) for param in [self.language] if param]
         repr_params = ", ".join([repr(self.content)[:30] + "...", *params])

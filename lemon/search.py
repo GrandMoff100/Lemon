@@ -1,35 +1,49 @@
 from collections import abc
-from typing import Any, Generator, Type
+from typing import Any, Generator, Type, cast
 
 from .markdown.markdown import Markdown, MarkdownType, Renderable
 
 
 def finditer(
-    markdown: Renderable,
+    markdown: Renderable | list[Renderable],
     tag: Type[Markdown] | None = None,
     query: MarkdownType | None = None,
+    parent: Renderable | None = None,
     **ctx: Any,
-) -> Generator[MarkdownType, None, None]:
+) -> Generator[Renderable, None, None]:
     if isinstance(markdown, Markdown):
         conditions = []
         if tag is not None:
-            conditions.append(isinstance(markdown, tag))
+            conditions.append(
+                type(markdown) == tag  # pylint: disable=unidiomatic-typecheck
+            )
         if query is not None:
             conditions.append(query in markdown)
         if ctx:
             conditions.append(
-                all(markdown.ctx[key] == value for key, value in ctx.items())
+                all(
+                    markdown.ctx[key] == value if key in markdown.ctx else False
+                    for key, value in ctx.items()
+                )
             )
         if all(conditions):
             yield markdown
-    elif isinstance(markdown, abc.Iterable):
-        for item in markdown:
-            if (results := finditer(item, tag=tag, query=query, **ctx)) is not None:
-                yield from results
+        if markdown.__children__:
+            yield from finditer(
+                markdown.__children__, tag=tag, query=query, **ctx, parent=markdown
+            )
     elif isinstance(markdown, str):
         if isinstance(query, str):
             if query in markdown:
-                yield markdown
+                if parent is not None:
+                    yield parent
+                else:
+                    yield markdown
+    elif isinstance(markdown, abc.Iterable):
+        for item in markdown:
+            yield from finditer(
+                item, tag=tag, query=query, **ctx, parent=cast(Renderable, parent)
+            )
 
 
 def findall(
@@ -37,7 +51,7 @@ def findall(
     tag: Type[Markdown] | None = None,
     query: MarkdownType | None = None,
     **ctx: Any,
-) -> list[MarkdownType]:
+) -> list[Renderable]:
     return list(finditer(markdown, tag=tag, query=query, **ctx))
 
 
@@ -46,7 +60,7 @@ def find(
     tag: Type[Markdown] | None = None,
     query: MarkdownType | None = None,
     **ctx: Any,
-) -> MarkdownType | None:
+) -> Renderable | None:
     for item in finditer(markdown, tag=tag, query=query, **ctx):
         return item
     return None

@@ -23,6 +23,9 @@ class Header(Markdown):
             return False
         return self.name == other.name and self.body == other.body
 
+    def __hash__(self) -> int:
+        return hash(self.dumps())
+
     @property
     def __children__(self) -> list[Renderable]:
         return [self.body]
