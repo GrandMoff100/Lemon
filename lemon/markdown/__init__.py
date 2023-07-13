@@ -1,7 +1,7 @@
 from .codeblock import CodeBlock
 from .header import Header
 from .links import Link
-from .markdown import Markdown, Newline, Text
+from .markdown import Markdown, Text
 from .serialize import dump, dumps, indexed_renderable, load, loads
 from .style import Bold, InlineCode, Italics, Strikethrough
 from .tables import Table
@@ -21,6 +21,5 @@ __all__ = (
     "InlineCode",
     "Strikethrough",
     "Text",
-    "Newline",
     "Link",
 )

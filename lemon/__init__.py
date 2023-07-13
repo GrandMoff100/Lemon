@@ -6,7 +6,6 @@ from .markdown import (
     Italics,
     Link,
     Markdown,
-    Newline,
     Strikethrough,
     Table,
     Text,

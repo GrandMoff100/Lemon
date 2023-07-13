@@ -92,21 +92,6 @@ Renderable = t.Union[
 ]  # type: ignore[misc]
 
 
-class Newline(Markdown):
-    __regex__: str = r"\n"
-
-    def __init__(self) -> None:
-        super().__init__({})
-
-    @staticmethod
-    def dumps(*_: t.Any, **__: t.Any) -> str:
-        return "\n"
-
-    @classmethod
-    def loads(cls, _: dict[str, t.Any]) -> MarkdownType:  # type: ignore[override]  # pylint: disable=arguments-differ
-        return cls()
-
-
 class Text(Markdown):
     def __init__(
         self,
