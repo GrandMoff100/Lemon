@@ -4,7 +4,7 @@ from .markdown import Markdown
 
 
 class CodeBlock(Markdown):
-    __regex__: str = r"```((?:.*)?)\n((?:.|\n)*?)```"
+    __regex__: str = r"(?s)```((?:.*)?)\n((?:.|\n)*?)```"
 
     def __init__(
         self,

@@ -74,30 +74,27 @@ def _asign_siblings(renderable: Renderable) -> None:
 def dumps(
     content: Renderable,
     *args: t.Any,
-    inline: bool = False,
     clean: bool = True,
     **kwargs: t.Any,
 ) -> str:
-    result = ""
+    result = []
     if isinstance(content, Markdown):  # pylint: disable=unidiomatic-typecheck
         if content.ctx:
-            result += f"\n\n<!--{json.dumps(content.ctx)}-->"
+            result.append(f"<!--{json.dumps(content.ctx)}-->")
         result += content.dumps(*args, **kwargs, clean=False)
     elif isinstance(content, str):
-        result += content
-        if inline is False:
-            result += "\n\n"
+        result.append(content)
     elif isinstance(content, abc.Iterable):
         for item in content:
-            result += dumps(item, *args, **kwargs, clean=False)
+            result.append(dumps(item, *args, **kwargs, clean=False))
     if clean:
-        return _clean(result)
-    return result
+        return _clean("\n\n".join(result))
+    return "\n\n".join(result)
 
 
 def loads(content: str) -> Renderable:
     if content == "":
-        return [content]
+        return []
     lexer = build_lexer()
     lexer.input(content)  # type: ignore[no-untyped-call]
     lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}

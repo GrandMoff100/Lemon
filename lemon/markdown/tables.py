@@ -47,7 +47,7 @@ def extract(
 
 
 class Table(Markdown):
-    __regex__: str = r"(\|(?:.+\|)+)\n\|(:?-+:?\|)+\n((?:\|(?:.+\|)+\n)+)"
+    __regex__: str = r"(?m)(\|(?:.+\|)+)\n\|(:?-+:?\|)+\n((?:\|(?:.+\|)+\n)+)"
 
     def __init__(
         self,

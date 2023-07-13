@@ -4,7 +4,7 @@ from .markdown import Markdown, MarkdownType, Renderable
 
 
 class Header(Markdown):
-    __regex__: str = r"\#+\ +(.+)\n((?:.|\n)+)"
+    __regex__: str = r"^(?m)(\#+)\ +(.+)$"
 
     def __init__(
         self,

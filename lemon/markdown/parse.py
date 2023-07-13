@@ -3,7 +3,7 @@ import re
 import typing as t
 
 from .lex import Lexer, LexToken, lex
-from .markdown import Markdown, MarkdownType, Newline, Text
+from .markdown import Markdown, MarkdownType, Text
 from .style import StyleMixin
 
 
@@ -13,7 +13,11 @@ def tokens() -> dict[str, t.Type[Markdown]]:
 
 def token_regex() -> t.Generator[tuple[str, str], None, None]:
     for name, cls in tokens().items():
-        yield f"t_{name}", cls.__ctx_regex__ + cls.__regex__
+        flags_regex = ""
+        if flags_match := re.search("\(\?[a-zA-Z]+?\)", cls.__regex__):
+            flags_regex = flags_match.group(0)
+            cls.__regex__ = cls.__regex__.replace(flags_match.group(0), "")
+        yield f"t_{name}", flags_regex + cls.__ctx_regex__ + cls.__regex__
 
 
 def lex_error(token: LexToken) -> None:
@@ -24,6 +28,7 @@ def build_lexer() -> Lexer:
     order_preserved_attributes = (
         ("tokens", tuple(tokens())),
         ("t_error", lex_error),
+        ("t_ignore", " \t\n"),
         *token_regex(),
     )
     cls = type("LemonLexer", (), {})
