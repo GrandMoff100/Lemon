@@ -25,16 +25,10 @@ def test_header() -> None:
     assert loads(content) == [
         Header(
             "My Awesome Project",
-            [
-                Text(
-                    "This project is so awesome that you should go star it on GitHub!"
-                ),
-                Header(
-                    "Description",
-                    [Text("You can implement nested sub-headers like magic!")],
-                ),
-            ],
-        )
+        ),
+        Text("This project is so awesome that you should go star it on GitHub!"),
+        Header("Description", level=2),
+        Text("You can implement nested sub-headers like magic!"),
     ]
 
 

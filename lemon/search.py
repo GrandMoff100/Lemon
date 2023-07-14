@@ -37,9 +37,9 @@ def finditer(
     if isinstance(markdown, Markdown):
         if _match_query(markdown, tag=tag, query=query, **ctx):
             yield markdown
-        if markdown.__children__:
+        if markdown.children:
             yield from finditer(
-                markdown.__children__, tag=tag, query=query, **ctx, parent=markdown
+                markdown.children, tag=tag, query=query, **ctx, parent=markdown
             )
     elif isinstance(markdown, str):
         if isinstance(query, str):

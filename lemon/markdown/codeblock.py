@@ -4,7 +4,7 @@ from .markdown import Markdown
 
 
 class CodeBlock(Markdown):
-    __regex__: str = r"(?s)```((?:.*)?)\n((?:.|\n)*?)```"
+    __regex__: str = r"(?s)^```((?:.*)?)\n((?:.|\n)*?)```"
 
     def __init__(
         self,
@@ -38,7 +38,6 @@ class CodeBlock(Markdown):
     @classmethod
     def loads(  # type: ignore[override] # pylint: disable=arguments-differ
         cls,
-        _: dict[str, t.Any] | None,
         language: str,
         content: str,
     ) -> Markdown:

@@ -9,9 +9,29 @@ from .markdown import (
     Strikethrough,
     Table,
     Text,
+    Table,
 )
 from .markdown import __all__ as _markdown_all
-from .markdown import dump, dumps, indexed_renderable, load, loads
+from .serialize import dump, dumps, indexed_renderable, load, loads
 from .search import find, findall, finditer
 
-__all__ = ("find", "findall", "finditer") + _markdown_all
+__all__ = (
+    "find",
+    "findall",
+    "finditer",
+    "CodeBlock",
+    "Markdown",
+    "Table",
+    "Header",
+    "Bold",
+    "Italics",
+    "InlineCode",
+    "Strikethrough",
+    "Text",
+    "Link",
+    "dumps",
+    "loads",
+    "dump",
+    "load",
+    "indexed_renderable",
+)

@@ -1,11 +1,11 @@
 import typing as t
 
 from .markdown import Markdown, MarkdownType, Renderable
-from .serialize import dumps, loads
+from ..serialize import dumps, loads
 
 
 class Link(Markdown):
-    __regex__: str = r'(!?)\[(.*(?!.*\[(?!.*\])))\]\((.+?) ?((?:".+?")?)\)'
+    __regex__: str = r'^(!?)\[(.*(?!.*\[(?!.*\])))\]\((.+?) ?((?:".+?")?)\)'
 
     def __init__(
         self,
@@ -40,7 +40,7 @@ class Link(Markdown):
         return hash(self.dumps())
 
     @property
-    def __children__(self) -> list[Renderable]:
+    def children(self) -> list[Renderable]:
         children: list[Renderable] = [self.face, self.path]
         if self.title is not None:
             children.append(self.title)
@@ -58,7 +58,6 @@ class Link(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ, too-many-arguments
         cls,
-        ctx: dict[str, t.Any] | None,
         media: str,
         face: str,
         path: str,

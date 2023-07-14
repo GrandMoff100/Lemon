@@ -1,3 +1,4 @@
+import json
 import typing as t
 from collections import defaultdict
 
@@ -47,8 +48,9 @@ class Context:
 
 class Markdown:
     __ignore__: bool = False
-    __regex__: str = r"((?:.|\n(?<!\n))+)"
-    __ctx_regex__: str = r"(?:<!--(\{.+\})-->\n)?"
+    __regex__: str = r"^([^ ](?:.|\n(?<!\n))*)"
+
+    precedence: float = 0.0
 
     ctx: dict[str, t.Any] = t.cast(dict[str, t.Any], Context())
 
@@ -60,26 +62,30 @@ class Markdown:
         self.ctx = ctx
 
     @property
-    def __children__(self) -> list["Renderable"]:
+    def children(self) -> list["Renderable"]:
         return []
 
     def __contains__(self, other: t.Any) -> bool:
-        return other in self.__children__
+        return other in self.children
 
     def __hash__(self) -> int:
         return hash(self.dumps())
 
     @classmethod
     def classes(cls) -> list[t.Type["Markdown"]]:
-        _classes = cls.__subclasses__()
-        return [_cls for _cls in _classes if not _cls.__ignore__]
+        for _cls in sorted(
+            (_cls for _cls in cls.__subclasses__() if not _cls.__ignore__),
+            key=lambda __cls: __cls.precedence,
+        ):
+            yield from _cls.classes()
+            yield _cls
 
     def dumps(self, *_, **__) -> str:
-        return ""
+        raise NotImplementedError
 
     @classmethod
-    def loads(cls, ctx: dict[str, t.Any] | None, content: str) -> "MarkdownType":
-        return Text.loads(ctx, content)
+    def loads(_, content: str) -> "MarkdownType":
+        raise NotImplementedError
 
 
 MarkdownType = t.Union[Markdown, str]
@@ -92,7 +98,31 @@ Renderable = t.Union[
 ]  # type: ignore[misc]
 
 
+class Comment(Markdown):
+    __regex__: str = r"^<!--(.+?)-->"
+
+    def __init__(self, content: str) -> None:
+        self.content = content
+        try:
+            data = json.loads(content)
+        except json.decoder.JSONDecodeError:
+            super().__init__({})
+        else:
+            super().__init__({"data": data})
+
+    def dumps(self, *_, **__) -> str:
+        if self.ctx.get("data"):
+            return f"<!--{json.dumps(self.ctx['data'])}-->"
+        return f"<!--{self.content}-->"
+
+    @classmethod
+    def loads(cls, content: str) -> "MarkdownType":
+        return Comment(content)
+
+
 class Text(Markdown):
+    precedence: float = 1.0
+
     def __init__(
         self,
         *elements: Renderable,
@@ -117,14 +147,13 @@ class Text(Markdown):
         return f"{self.__class__.__qualname__}({', '.join(map(repr, self.elements))})"
 
     @property
-    def __children__(self) -> list["Renderable"]:
+    def children(self) -> list["Renderable"]:
         return self.elements
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         # Prevents circular import!
-        from .serialize import dumps  # pylint: disable=import-outside-toplevel
+        from ..serialize import dumps  # pylint: disable=import-outside-toplevel
 
-        kwargs["inline"] = True
         return " ".join(
             [
                 dumps(
@@ -139,7 +168,6 @@ class Text(Markdown):
     @classmethod
     def loads(  # pylint: disable=arguments-differ
         cls,
-        _: dict[str, t.Any] | None,
         *elements: "MarkdownType",
     ) -> "MarkdownType":
         return cls(*elements)

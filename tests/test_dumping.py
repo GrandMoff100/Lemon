@@ -14,13 +14,13 @@ from lemon import (
 
 
 def test_header() -> None:
-    document = Header(
-        "My Awesome Project",
-        [
-            "This project is so awesome that you should go star it on GitHub!",
-            Header("Description", "You can implement nested sub-headers like magic!"),
-        ],
-    )
+    document = [
+        Header("My Awesome Project"),
+        "This project is so awesome that you should go star it on GitHub!",
+        Header(
+            "Description", "You can implement nested sub-headers like magic!", level=2
+        ),
+    ]
     expected = (
         "# My Awesome Project\n\n"
         "This project is so awesome that you should go star it on GitHub!\n\n"

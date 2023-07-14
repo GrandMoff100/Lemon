@@ -25,43 +25,43 @@ class StyleMixin(Text):
         return hash(self.dumps())
 
     @property
-    def __children__(self) -> list[Renderable]:
+    def children(self) -> list[Renderable]:
         return [self.content]
 
     @classmethod
-    def loads(cls, _: dict[str, t.Any] | None, content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ
+    def loads(cls, content: str) -> MarkdownType:  # type: ignore[override] # pylint: disable=arguments-differ
         return cls(content)
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         # Prevents circular import!
-        from .serialize import dumps  # pylint: disable=import-outside-toplevel
+        from ..serialize import dumps  # pylint: disable=import-outside-toplevel
 
         return dumps(self.content.strip(), *args, **kwargs).strip()
 
 
 class Bold(StyleMixin):
-    __regex__: str = r"(?<!\\)\*\*(.+?)(?<!\\)\*\*"
+    __regex__: str = r"^(?<!\\)\*\*(.+?)(?<!\\)\*\*"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         return f" **{super().dumps(*args, **kwargs)}** "
 
 
 class Italics(StyleMixin):
-    __regex__: str = r"(?<!\\)\*(.+?)(?<!\\)\*"
+    __regex__: str = r"^(?<!\\)\*(.+?)(?<!\\)\*"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         return f" *{super().dumps(*args, **kwargs)}* "
 
 
 class Strikethrough(StyleMixin):
-    __regex__: str = r"(?<!\\)~~(.+?)(?<!\\)~~"
+    __regex__: str = r"^(?<!\\)~~(.+?)(?<!\\)~~"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         return f" ~~{super().dumps(*args, **kwargs)}~~ "
 
 
 class InlineCode(StyleMixin):
-    __regex__: str = r"(?:(?<!\\)``(?!`)(.+?)(?<!\\)``)|(?:(?<!\\)`(?!`)\1(?<!\\)`)"
+    __regex__: str = r"^(?:(?<!\\)``(?!`)(.+?)(?<!\\)``)|(?:(?<!\\)`(?!`)\1(?<!\\)`)"
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
         return f" ``{super().dumps(*args, **kwargs)}`` "

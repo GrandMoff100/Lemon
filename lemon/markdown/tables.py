@@ -2,7 +2,7 @@ import re
 import typing as t
 
 from .markdown import Markdown, MarkdownType, Renderable
-from .serialize import dumps, loads
+from ..serialize import dumps, loads
 
 
 def pad(element: Renderable, *args: t.Any, **kwargs: t.Any) -> str:
@@ -23,31 +23,31 @@ def extract(
     raw_headers: str,
     raw_alignment: str,
     raw_rows: str,
-) -> tuple[list[list[MarkdownType]], list[MarkdownType], list[str]]:
-    _, *columns, _ = map(str.strip, raw_headers.split("|"))
-    _, *alignment, _ = map(str.strip, raw_alignment.split("|"))
+) -> tuple[list[list[list[MarkdownType]]], list[MarkdownType], list[str]]:
+    _, *columns, _ = map(str.strip, re.split(r"(?<!\\)\|", raw_headers))
+    _, *alignment, _ = map(str.strip, re.split(r"(?<!\\)\|", raw_alignment))
     rows = []
     for row in raw_rows.splitlines():
-        _, *elements, _ = map(str.strip, row.split("|"))
+        _, *elements, _ = map(str.strip, re.split(r"(?<!\\)\|", row))
         rows.append(
             list(
                 map(
-                    lambda element: t.cast(list[Markdown | str], loads(element))[0],
+                    lambda element: t.cast(list[Markdown | str], loads(element)),
                     elements,
                 )
             )
         )
     return (
         rows,
-        list(
-            map(lambda column: t.cast(list[Markdown | str], loads(column))[0], columns)
-        ),
+        list(map(lambda column: t.cast(list[Markdown | str], loads(column)), columns)),
         list(map(match_alignment, alignment)),
     )
 
 
 class Table(Markdown):
-    __regex__: str = r"(?m)(\|(?:.+\|)+)\n\|(:?-+:?\|)+\n((?:\|(?:.+\|)+\n)+)"
+    __regex__: str = (
+        r"(?m)(^\|(?:.+\|)+$\n)(^\|(?:\s*:?-+:?\s*\|)+$\n)((?:^\|(?:.+\|)+$\n)+)"
+    )
 
     def __init__(
         self,
@@ -116,11 +116,9 @@ class Table(Markdown):
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ
         cls,
-        ctx: t.Optional[dict[str, t.Any]],
         raw_headers: str,
         raw_alignment: str,
         raw_rows: str,
     ) -> MarkdownType:
-        element_id = ctx.get("element-id") if ctx is not None else None
         rows, columns, alignment = extract(raw_headers, raw_alignment, raw_rows)
-        return cls(rows, columns, alignment, element_id=element_id)
+        return cls(rows, columns, alignment)

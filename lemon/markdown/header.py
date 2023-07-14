@@ -4,7 +4,7 @@ from .markdown import Markdown, MarkdownType, Renderable
 
 
 class Header(Markdown):
-    __regex__: str = r"^(?m)(\#+)\ +(.+)$"
+    __regex__: str = r"(?m)^(\#+)\ +(.+)$"
 
     def __init__(
         self,
@@ -27,18 +27,17 @@ class Header(Markdown):
         return hash(self.dumps())
 
     @property
-    def __children__(self) -> list[Renderable]:
+    def children(self) -> list[Renderable]:
         return [self.name]
 
     def dumps(self, *args: t.Any, **kwargs: t.Any) -> str:
-        from .serialize import dumps  # pylint: disable=import-outside-toplevel
+        from ..serialize import dumps  # pylint: disable=import-outside-toplevel
 
         return f"{'#' * self.level} {dumps(self.name, *args, **kwargs)}\n"
 
     @classmethod
     def loads(  # type: ignore[override]  # pylint: disable=arguments-differ
         cls,
-        _: dict[str, t.Any] | None,
         depth: str,
         name: str,
     ) -> MarkdownType:

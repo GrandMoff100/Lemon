@@ -3,9 +3,10 @@ import re
 import typing as t
 from collections import abc
 
-from .codeblock import CodeBlock
-from .markdown import Markdown, Renderable
-from .parse import build_lexer, construct, scrub
+from .markdown.codeblock import CodeBlock
+from .markdown.markdown import Markdown, Renderable
+from .parse import Lexer, construct, scrub
+
 
 CLEANING_IGNORE_PATTERNS = [
     r"<!--.*?-->",  # HTML comments
@@ -49,7 +50,7 @@ def indexed_renderable(renderable: Renderable) -> Renderable:
 
 def _asign_parents(renderable: Renderable) -> None:
     if isinstance(renderable, Markdown):
-        for child in renderable.__children__:
+        for child in renderable.children:
             if isinstance(child, Markdown):
                 child.parent = renderable
                 _asign_parents(child)
@@ -60,7 +61,7 @@ def _asign_parents(renderable: Renderable) -> None:
 
 def _asign_siblings(renderable: Renderable) -> None:
     if isinstance(renderable, Markdown):
-        for child in renderable.__children__:
+        for child in renderable.children:
             _asign_siblings(child)
     elif isinstance(renderable, abc.Iterable):
         prev = None
@@ -79,9 +80,7 @@ def dumps(
 ) -> str:
     result = []
     if isinstance(content, Markdown):  # pylint: disable=unidiomatic-typecheck
-        if content.ctx:
-            result.append(f"<!--{json.dumps(content.ctx)}-->")
-        result += content.dumps(*args, **kwargs, clean=False)
+        result.append(content.dumps(*args, **kwargs, clean=False))
     elif isinstance(content, str):
         result.append(content)
     elif isinstance(content, abc.Iterable):
@@ -95,11 +94,14 @@ def dumps(
 def loads(content: str) -> Renderable:
     if content == "":
         return []
-    lexer = build_lexer()
-    lexer.input(content)  # type: ignore[no-untyped-call]
-    lookup = {cls.__qualname__.upper(): cls for cls in Markdown.classes()}
+    lexer = Lexer()
     return indexed_renderable(
-        scrub([construct(token.value, lookup[token.type]) for token in lexer])
+        scrub(
+            [
+                construct(string, lexer.tokens[token])
+                for token, string in lexer.parse(content)
+            ]
+        )
     )
 
 
